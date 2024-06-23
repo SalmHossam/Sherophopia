@@ -9,7 +9,7 @@ class SearchTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar:AppBar(
-          backgroundColor:Color.fromRGBO(72, 132, 151, 100) ,
+          backgroundColor:Color.fromRGBO(72, 132, 151, 1) ,
           title: Text("Sherophopia",
               style: const TextStyle(
                   fontSize: 22, fontWeight: FontWeight.w700,color:Colors.white))),

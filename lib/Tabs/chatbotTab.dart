@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sherophopia/Tabs/chatScreen.dart';
 
 class ChatBotTab extends StatefulWidget {
   const ChatBotTab({super.key});
@@ -24,7 +25,7 @@ class _ChatBotTabState extends State<ChatBotTab> {
               fontSize: 20
           ),),
           ElevatedButton(onPressed: (){
-            Navigator.push(context, MaterialPageRoute(builder: (context) => const ChatBotTab()),
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const ChatScreen()),
             );          setState(() {
             });
 
