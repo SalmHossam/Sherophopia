@@ -20,7 +20,7 @@ class CommunityTab extends StatelessWidget {
 
             }, style: ButtonStyle(
                 backgroundColor:
-                MaterialStatePropertyAll(Color.fromRGBO(72, 132, 151, 100))),child: Text("Start",style: TextStyle(fontSize: 30),)),
+                MaterialStatePropertyAll(Color.fromRGBO(72, 132, 151, 1))),child: Text("Start",style: TextStyle(fontSize: 30),)),
             SizedBox(
               height: 50,
             ),

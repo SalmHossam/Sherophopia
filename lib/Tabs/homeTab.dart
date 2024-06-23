@@ -134,10 +134,10 @@ class _QuoteSectionState extends State<QuoteSection> {
                 final result = await Share.shareWithResult(_quote);
 
                 if (result.status == ShareResultStatus.success) {
-                  print('Your Quote Shared successfully');
+                  Fluttertoast.showToast(msg: 'Your Quote Shared successfully');
                 }
                 else{
-                  print('Failed to share your Quote');
+                  Fluttertoast.showToast(msg:'Failed to share your Quote');
 
                 }
               }, style: ElevatedButton.styleFrom(
