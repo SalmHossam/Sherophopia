@@ -43,6 +43,9 @@ dependencies:
   intl: ^0.18.0
   booking_calendar: ^1.1.10
   smooth_page_indicator: ^1.1.0
+  http: ^1.1.0
+  share_plus: ^7.2.2
+  fluttertoast: ^8.2.5
 
 
 

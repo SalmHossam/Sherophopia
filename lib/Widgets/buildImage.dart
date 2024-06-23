@@ -16,7 +16,7 @@ class BuildImage extends StatelessWidget {
           children: [
             Image(image: AssetImage(model.imagePath)),
             Text(model.title,style: TextStyle(
-              color: Color.fromRGBO(72, 132, 151, 100),
+              color: Color.fromRGBO(72, 132, 151, 1),
               fontWeight: FontWeight.bold,
               fontSize: 30,
             ),),

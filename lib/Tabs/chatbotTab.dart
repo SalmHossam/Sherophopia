@@ -12,7 +12,7 @@ class _ChatBotTabState extends State<ChatBotTab> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar:AppBar(
-        backgroundColor:Color.fromRGBO(72, 132, 151, 100) ,
+        backgroundColor:Color.fromRGBO(72, 132, 151, 1),
         title: Text("Chatbot"),
       ),
       body: Column(
@@ -30,7 +30,7 @@ class _ChatBotTabState extends State<ChatBotTab> {
 
           }, style: ButtonStyle(
               backgroundColor:
-          MaterialStatePropertyAll(Color.fromRGBO(72, 132, 151, 100))),
+          MaterialStatePropertyAll(Color.fromRGBO(72, 132, 151, 1))),
               child: Text("Start",style: TextStyle(fontSize: 30),)),
           SizedBox(
             height: 50,

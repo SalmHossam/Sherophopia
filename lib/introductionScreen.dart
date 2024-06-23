@@ -36,7 +36,7 @@ class IntroductionScreen extends StatelessWidget {
         ),
       ),
       bottomSheet:Container(
-        color: Color.fromRGBO(72, 132, 151, 100),
+        color: Color.fromRGBO(72, 132, 151, 1),
         padding: EdgeInsets.symmetric(horizontal: 80),
         height: 80,
         child:Row(

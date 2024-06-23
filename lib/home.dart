@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sherophopia/Tabs/homeTab.dart';
-import 'package:sherophopia/Widgets/Slider.dart';
+import 'package:sherophopia/Tabs/searchTab.dart';
+import 'package:sherophopia/Widgets/Drawer.dart';
 import 'package:sherophopia/Tabs/communityTab.dart';
 import 'package:sherophopia/Tabs/chatbotTab.dart';
 import 'package:sherophopia/Tabs/profileTab.dart';
@@ -31,7 +32,7 @@ class _HomeState extends State<Home> {
     return Scaffold(
       extendBody: true,
       appBar: AppBar(
-          backgroundColor:Color.fromRGBO(72, 132, 151, 100) ,
+          backgroundColor:Color.fromRGBO(72, 132, 151, 1),
           title: Text("Sherophopia",
               style: const TextStyle(
                   fontSize: 22, fontWeight: FontWeight.w700,color:Colors.white))),
@@ -43,7 +44,7 @@ class _HomeState extends State<Home> {
           children: [
             const DrawerHeader(
               decoration: BoxDecoration(
-                color:Color.fromRGBO(72, 132, 151, 200) ,
+                color:Color.fromRGBO(72, 132, 151, 1),
               ),
               child: Text('Sherophopia'),
             ),
@@ -51,6 +52,7 @@ class _HomeState extends State<Home> {
               title: const Text('Search'),
               selected: _selectedIndex == 0,
               onTap: () {
+                Navigator.pushReplacementNamed(context, SearchTab.routeName);
 
               },
             ),
@@ -75,7 +77,7 @@ class _HomeState extends State<Home> {
 
 
       bottomNavigationBar: BottomAppBar(
-        color: Color.fromRGBO(72, 132, 151, 100),
+        color: Color.fromRGBO(72, 132, 151, 1),
         shape: CircularNotchedRectangle(),
         notchMargin: 8,
         child: BottomNavigationBar(
@@ -100,7 +102,7 @@ class _HomeState extends State<Home> {
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.chat,color: Colors.white,size: 40,),
-        backgroundColor:Color.fromRGBO(72, 132, 151, 100) ,
+        backgroundColor:Color.fromRGBO(72, 132, 151, 1),
         onPressed: () {
           Navigator.push(
             context,

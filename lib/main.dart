@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
+import 'package:sherophopia/Tabs/searchTab.dart';
 import 'package:sherophopia/home.dart';
 import 'package:sherophopia/introductionScreen.dart';
 
@@ -30,7 +31,9 @@ class MyApp extends StatelessWidget {
       initialRoute: IntroductionScreen.routeName,
       routes: {
         IntroductionScreen.routeName:(context)=>IntroductionScreen(),
-        Home.routeName:(context)=>Home()
+        Home.routeName:(context)=>Home(),
+        SearchTab.routeName:(context)=>SearchTab()
+
       },
 
     );
