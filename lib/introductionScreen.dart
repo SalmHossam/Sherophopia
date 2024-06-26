@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sherophopia/Models/BuildImageModel.dart';
 import 'package:sherophopia/Widgets/buildImage.dart';
-import 'package:sherophopia/home.dart';
+import 'package:sherophopia/patientHome.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class IntroductionScreen extends StatelessWidget {

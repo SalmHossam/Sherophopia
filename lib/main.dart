@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:sherophopia/Tabs/searchTab.dart';
-import 'package:sherophopia/home.dart';
+import 'package:sherophopia/patientHome.dart';
 import 'package:sherophopia/introductionScreen.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+
 
 Future<void> main() async {
   // Show splash screen for 2 seconds
-  Gemini.init(apiKey: '--- Your Gemini Api Key ---');
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(
     SizedBox(
       child: Image.asset(
@@ -24,6 +28,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
 
       title: 'Sherophopia',
