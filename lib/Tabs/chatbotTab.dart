@@ -16,6 +16,7 @@ class _ChatBotTabState extends State<ChatBotTab> {
         backgroundColor:Color.fromRGBO(72, 132, 151, 1),
         title: Text("Chatbot"),
       ),
+      backgroundColor: Colors.white,
       body: Column(
         children: [
           SizedBox(height:100,),

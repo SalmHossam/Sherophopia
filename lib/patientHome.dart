@@ -6,6 +6,7 @@ import 'package:sherophopia/Tabs/communityTab.dart';
 import 'package:sherophopia/Tabs/chatbotTab.dart';
 import 'package:sherophopia/Tabs/profileTab.dart';
 import 'package:sherophopia/Tabs/SettingsTab.dart';
+import 'package:sherophopia/introductionScreen.dart';
 
 class Home extends StatefulWidget {
   static const String routeName="HomeScreen";
@@ -23,13 +24,14 @@ class _HomeState extends State<Home> {
     HomeTab(),
     CommunityTab(),
     ProfileTab(),
-    SettingsTab(),
+    SearchTab(),
   ];
 
   var _selectedIndex=0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       extendBody: true,
       appBar: AppBar(
           backgroundColor:Color.fromRGBO(72, 132, 151, 1),
@@ -37,43 +39,57 @@ class _HomeState extends State<Home> {
               style: const TextStyle(
                   fontSize: 22, fontWeight: FontWeight.w700,color:Colors.white))),
       body:Tabs[index],
-      drawer:Drawer(
+      drawer: Drawer(
         child: ListView(
           // Important: Remove any padding from the ListView.
           padding: EdgeInsets.zero,
           children: [
-            const DrawerHeader(
+            DrawerHeader(
               decoration: BoxDecoration(
-                color:Color.fromRGBO(72, 132, 151, 1),
+                color: Color.fromRGBO(72, 132, 151, 1),
               ),
-              child: Text('Sherophopia'),
+              child: Align(
+                alignment: Alignment.bottomLeft,
+                child: Text(
+                  'Sherophopia',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
             ),
             ListTile(
-              title: const Text('Search'),
+              leading: Icon(Icons.logout, color: Colors.black),
+              title: Text('Logout', style: TextStyle(fontSize: 18)),
+              selectedColor: Colors.black,
               selected: _selectedIndex == 0,
               onTap: () {
-                Navigator.pushReplacementNamed(context, SearchTab.routeName);
-
+                Navigator.pushReplacementNamed(context, IntroductionScreen.routeName);
               },
             ),
             ListTile(
-              title: const Text('About us'),
+              leading: Icon(Icons.info, color: Colors.black),
+              title: Text('About us', style: TextStyle(fontSize: 18)),
+              selectedColor: Colors.black,
               selected: _selectedIndex == 1,
               onTap: () {
-
+                // Add your About Us navigation or functionality here
               },
             ),
             ListTile(
-              title: const Text('Contact us'),
+              leading: Icon(Icons.contact_mail, color: Colors.black),
+              title: Text('Contact us', style: TextStyle(fontSize: 18)),
+              selectedColor: Colors.black,
               selected: _selectedIndex == 2,
               onTap: () {
-
+                // Add your Contact Us navigation or functionality here
               },
             ),
           ],
         ),
-
-      ) ,
+      ),
 
 
       bottomNavigationBar: BottomAppBar(
@@ -96,7 +112,7 @@ class _HomeState extends State<Home> {
             BottomNavigationBarItem(icon: Icon(Icons.home_rounded,size: 40,color:Colors.white),label: ""),
             BottomNavigationBarItem(icon: Icon(Icons.groups_rounded,size: 40,color:Colors.white),label: ""),
             BottomNavigationBarItem(icon: Icon(Icons.person,size: 40,color:Colors.white),label: ""),
-            BottomNavigationBarItem(icon: Icon(Icons.settings,size: 40,color:Colors.white),label:"")
+            BottomNavigationBarItem(icon: Icon(Icons.search,size: 40,color:Colors.white),label:"")
           ],
         ),
       ),

@@ -23,6 +23,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
     setState(() {
       _messages.add(Message(isUser: true, message: message, date: DateTime.now()));
+      _userInput.clear();
     });
 
     final content = [Content.text(message)];

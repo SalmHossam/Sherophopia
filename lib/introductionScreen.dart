@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:sherophopia/Models/BuildImageModel.dart';
 import 'package:sherophopia/Widgets/buildImage.dart';
+import 'package:sherophopia/login.dart';
 import 'package:sherophopia/patientHome.dart';
+import 'package:sherophopia/signUp.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class IntroductionScreen extends StatelessWidget {
@@ -43,7 +45,7 @@ class IntroductionScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             TextButton(onPressed: () {
-              Navigator.pushReplacementNamed(context, Home.routeName);
+              Navigator.pushReplacementNamed(context, SignUp.routeName);
 
             }, child:Text("Skip",style:TextStyle(
               color: Colors.white
@@ -63,7 +65,7 @@ class IntroductionScreen extends StatelessWidget {
             TextButton(onPressed: () {
               if (pageController.page == 2) {
                 // Navigate to home screen if it's the last page
-                Navigator.pushReplacementNamed(context, Home.routeName);
+                Navigator.pushReplacementNamed(context, SignUp.routeName);
               } else {
                 // Go to the next page
                 pageController.nextPage(

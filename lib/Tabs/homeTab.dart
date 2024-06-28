@@ -4,8 +4,36 @@ import 'package:http/http.dart' as http;
 import 'package:share_plus/share_plus.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:sherophopia/Widgets/QouteSection.dart';
 
-class HomeTab extends StatelessWidget {
+import '../Widgets/FeelingIcon.dart';
+import '../Widgets/sessions.dart';
+
+class HomeTab extends StatefulWidget {
+  @override
+  _HomeTabState createState() => _HomeTabState();
+}
+
+class _HomeTabState extends State<HomeTab> {
+  User? user;
+  String username = '';
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUser();
+  }
+
+  void fetchUser() {
+    user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      setState(() {
+        username = user!.displayName ?? user!.email!;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -24,7 +52,7 @@ class HomeTab extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('Welcome back', style: TextStyle(fontSize: 16)),
-                  Text('Salma Soliman', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  Text(username, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 ],
               ),
             ],
@@ -35,12 +63,12 @@ class HomeTab extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              FeelingIcon(icon: Icons.sentiment_very_satisfied, label: 'Satisfy'),
-              FeelingIcon(icon: Icons.sentiment_dissatisfied, label: 'Sad'),
-              FeelingIcon(icon: Icons.sentiment_very_dissatisfied, label: 'Angry'),
-              FeelingIcon(icon: Icons.sentiment_satisfied, label: 'Happy'),
-              FeelingIcon(icon: Icons.sentiment_neutral, label: 'Worry'),
-              FeelingIcon(icon: Icons.add_circle_outline, label: 'Other'),
+              FeelingIcon(icon: Icons.sentiment_very_satisfied, label: 'Satisfy', onTap: () => _handleFeelingTap(context, 'Satisfy')),
+              FeelingIcon(icon: Icons.sentiment_dissatisfied, label: 'Sad', onTap: () => _handleFeelingTap(context, 'Sad')),
+              FeelingIcon(icon: Icons.sentiment_very_dissatisfied, label: 'Angry', onTap: () => _handleFeelingTap(context, 'Angry')),
+              FeelingIcon(icon: Icons.sentiment_satisfied, label: 'Happy', onTap: () => _handleFeelingTap(context, 'Happy')),
+              FeelingIcon(icon: Icons.sentiment_neutral, label: 'Worry', onTap: () => _handleFeelingTap(context, 'Worry')),
+              FeelingIcon(icon: Icons.add_circle_outline, label: 'Other', onTap: () => _showBottomSheet(context)),
             ],
           ),
           SizedBox(height: 20),
@@ -51,148 +79,46 @@ class HomeTab extends StatelessWidget {
       ),
     );
   }
-}
 
-class FeelingIcon extends StatelessWidget {
-  final IconData icon;
-  final String label;
-
-  FeelingIcon({required this.icon, required this.label});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Icon(icon, size: 40),
-        Text(label),
-      ],
-    );
-  }
-}
-
-class QuoteSection extends StatefulWidget {
-  @override
-  _QuoteSectionState createState() => _QuoteSectionState();
-}
-
-class _QuoteSectionState extends State<QuoteSection> {
-  String _quote = 'Everything will be okay';
-
-  Future<void> _getRandomQuote() async {
-    final response = await http.get(Uri.parse('https://api.quotable.io/random'));
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      setState(() {
-        _quote = data['content'];
-      });
-    } else {
-      setState(() {
-        _quote = 'Failed to load a quote';
-      });
-    }
+  void _handleFeelingTap(BuildContext context, String feeling) {
+    Fluttertoast.showToast(msg: 'You are feeling $feeling');
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _getRandomQuote();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Color.fromRGBO(72, 132, 151, 1),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('Your Quotes', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
-          SizedBox(height: 10),
-          Text(_quote, style: TextStyle(fontSize: 14, color: Colors.white)),
-          SizedBox(height: 20),
-          Row(
+  void _showBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) {
+        return Padding(
+          padding: MediaQuery.of(context).viewInsets,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              ElevatedButton(onPressed: () async {
-                final result = await Share.shareWithResult(_quote);
-
-                if (result.status == ShareResultStatus.success) {
-                  Fluttertoast.showToast(msg: 'Your Quote Shared successfully');
-                }
-                else{
-                  Fluttertoast.showToast(msg:'Failed to share your Quote');
-
-                }
-              }, style: ElevatedButton.styleFrom(
-                primary: Colors.white, // Button color
-                onPrimary: Color.fromRGBO(72, 132, 151, 1), // Text color
-              ),
-                child: Icon(Icons.share),),
-              Spacer(),
-              Center(
-                child: ElevatedButton(
-                  onPressed: _getRandomQuote,
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.white, // Button color
-                    onPrimary: Color.fromRGBO(72, 132, 151, 1), // Text color
-                  ),
-                  child: Icon(Icons.refresh_rounded),
+              SizedBox(height: 50,),
+              Text('Please describe your feeling',style: TextStyle(fontWeight: FontWeight.w700),),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  cursorColor:Color.fromRGBO(72, 132, 151, 1) ,
+                  decoration: InputDecoration(hintText: 'Type here...',
+                    border: UnderlineInputBorder(),hoverColor:Color.fromRGBO(72, 132, 151, 1) , ),
                 ),
               ),
-              Spacer(),
-              ElevatedButton(onPressed: () async{
-                await Clipboard.setData(ClipboardData(text: _quote));
-                Fluttertoast.showToast(msg: "Copied Successfully");
-
-              }, style: ElevatedButton.styleFrom(
-                primary: Colors.white, // Button color
-                onPrimary: Color.fromRGBO(72, 132, 151, 1), // Text color
+              SizedBox(height: 10),
+              ElevatedButton(
+                style: ButtonStyle(backgroundColor:
+                MaterialStatePropertyAll(Color.fromRGBO(72, 132, 151, 1))),
+                onPressed: () {
+                  // Handle submission
+                  Navigator.pop(context);
+                  Fluttertoast.showToast(msg: 'Your response has been submitted');
+                },
+                child: Text('Submit'),
               ),
-                child: Icon(Icons.copy),),
             ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
-
-class UpcomingSessions extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('Upcoming Sessions', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-        ListTile(
-          leading: CircleAvatar(backgroundImage: AssetImage('assets/images/doctor1.jpg')),
-          title: Text('Dr. Ali Maher'),
-          subtitle: Text('Topic: Anxiety disorders\nToday at 8 PM'),
-          trailing: Checkbox(value: true, onChanged: (bool? value) {}),
-        ),
-        ListTile(
-          leading: CircleAvatar(backgroundImage: AssetImage('assets/images/doctor2.jpg')),
-          title: Text('Dr. Mai Adel'),
-          subtitle: Text('Topic: Depression'),
-          trailing: Checkbox(value: false, onChanged: (bool? value) {}),
-        ),
-        ListTile(
-          leading: CircleAvatar(backgroundImage: AssetImage('assets/images/doctor2.jpg')),
-          title: Text('Dr. Mai Adel'),
-          subtitle: Text('Topic: Depression'),
-          trailing: Checkbox(value: false, onChanged: (bool? value) {}),
-        ),
-        ListTile(
-          leading: CircleAvatar(backgroundImage: AssetImage('assets/images/doctor2.jpg')),
-          title: Text('Dr. Mai Adel'),
-          subtitle: Text('Topic: Depression'),
-          trailing: Checkbox(value: false, onChanged: (bool? value) {}),
-        ),
-      ],
-    );
-  }
-}
-
-
