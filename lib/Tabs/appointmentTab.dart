@@ -35,7 +35,7 @@ class appointmentTab extends StatelessWidget {
       hideBreakTime: hideBreakTime,
       locale: locale,
       disabledDays: disabledDays,
-      startingDayOfWeek: startingDayOfWeek,
+      startingDayOfWeek: startingDayOfWeek, bookingService: null,
     );
   }
 }

@@ -58,6 +58,8 @@ dependencies:
   firebase_app_check: ^0.2.1+8
   firebase_crashlytics: ^3.4.9
   firebase_analytics: ^10.8.0
+  email_validator: ^2.0.1
+  google_maps_flutter: ^2.5.3
 
 
 
