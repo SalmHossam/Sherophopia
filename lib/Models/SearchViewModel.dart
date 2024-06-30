@@ -1,40 +1,30 @@
-import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:sherophopia/Models/SearchViewModel.dart';
+import 'package:flutter/material.dart';
 
 class SearchViewModel extends ChangeNotifier {
-  String _category = 'hospital';
-  String get category => _category;
+  bool isLoading = false;
+  String? error;
+  List<Map<String, dynamic>> results = [];
 
-  void setCategory(String category) {
-    _category = category;
+  Future<void> search(String query) async {
+    isLoading = true;
+    error = null;
+    results = [];
     notifyListeners();
-    fetchNearbyPlaces();
-  }
 
-  Future<void> searchPlaces(String query) async {
-    // Implement search logic here
-    // Example Firestore search logic:
-    var firestore;
-    var result = await firestore.instance
-        .collection('places')
-        .where('name', isGreaterThanOrEqualTo: query)
-        .get();
+    try {
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('medical_professionals')
+          .where('name', isGreaterThanOrEqualTo: query)
+          .where('name', isLessThanOrEqualTo: query + '\uf8ff')
+          .get();
 
-    // Handle the result
-    print('Found ${result.docs.length} places');
-  }
+      results = querySnapshot.docs.map((doc) => doc.data()).toList();
+    } catch (e) {
+      error = e.toString();
+    }
 
-  Future<void> fetchNearbyPlaces() async {
-    // Example Firestore fetch logic:
-    var firestore;
-    var result = await firestore.instance
-        .collection('places')
-        .where('category', isEqualTo: _category)
-        .get();
-
-    // Handle the result
-    print('Found ${result.docs.length} places in category $_category');
+    isLoading = false;
+    notifyListeners();
   }
 }
