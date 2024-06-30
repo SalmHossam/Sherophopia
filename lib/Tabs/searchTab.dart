@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'SearchViewModel.dart';
+import 'package:sherophopia/Models/SearchViewModel.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'CategoryIcon.dart'; // Import the CategoryIcon widget
+import 'package:sherophopia/Tabs/map.dart';
+import 'package:sherophopia/Widgets/CategoryIcon.dart'; // Import the CategoryIcon widget
 
-class SearchTap extends StatelessWidget {
+class SearchTab extends StatelessWidget {
+  static String routeName="search";
   @override
   Widget build(BuildContext context) {
     return Scaffold(

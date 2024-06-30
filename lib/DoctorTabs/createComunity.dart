@@ -19,18 +19,21 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
   String _link = '';
   String _sanitizedUrl = '';
   bool _isValidUrl = false;
+  String _confirmUrl = '';
+
 
   void _sanitizeAndDisplayUrl() {
     final userInput = _urlController.text.trim();
 
     if (Uri.parse(userInput).isAbsolute) {
       setState(() {
-        _sanitizedUrl = 'Valid URL';
+        _sanitizedUrl = userInput;
         _isValidUrl = true;
+        _confirmUrl='Valid URl';
       });
     } else {
       setState(() {
-        _sanitizedUrl = 'Invalid URL';
+        _confirmUrl= 'Invalid URL';
         _isValidUrl = false;
       });
     }
@@ -43,8 +46,8 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
         await _firestore.collection('communities').add({
           'symptomName': _symptomName,
           'description': _description,
-          'link': _link,
-          'creatorUid': user.email,
+          'link': _sanitizedUrl,
+          'creatorEmail': user.email,
           'members': [user.email], // Include creator as the first member
           'requests': [], // Initialize empty requests array
         });
@@ -73,72 +76,75 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextField(
-              decoration: InputDecoration(labelText: 'Symptom Name'),
-              onChanged: (value) {
-                setState(() {
-                  _symptomName = value;
-                });
-              },
-            ),
-            SizedBox(height: 16.0),
-            TextField(
-              decoration: InputDecoration(labelText: 'Description'),
-              onChanged: (value) {
-                setState(() {
-                  _description = value;
-                });
-              },
-            ),
-            SizedBox(height: 16.0),
-            TextField(
-              controller: _urlController,
-              decoration: InputDecoration(
-                labelText: 'Enter URL',
-                border: UnderlineInputBorder(),
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextField(
+                decoration: InputDecoration(labelText: 'Symptom Name'),
+                onChanged: (value) {
+                  setState(() {
+                    _symptomName = value;
+                  });
+                },
               ),
-            ),
-            SizedBox(height: 16.0),
-            ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(
-                  Color.fromRGBO(72, 132, 151, 1),
+              SizedBox(height: 16.0),
+              TextField(
+                decoration: InputDecoration(labelText: 'Description'),
+                onChanged: (value) {
+                  setState(() {
+                    _description = value;
+                  });
+                },
+              ),
+              SizedBox(height: 16.0),
+              TextField(
+                controller: _urlController,
+                decoration: InputDecoration(
+                  labelText: 'Enter URL',
+                  border: UnderlineInputBorder(),
                 ),
               ),
-              onPressed: _sanitizeAndDisplayUrl,
-              child: Text('Sanitize URL'),
-            ),
-            SizedBox(height: 16.0),
-            Text(
-              'Sanitized URL: $_sanitizedUrl',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 24.0),
-            ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(
-                  Color.fromRGBO(72, 132, 151, 1),
+              SizedBox(height: 16.0),
+              ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(
+                    Color.fromRGBO(72, 132, 151, 1),
+                  ),
                 ),
+                onPressed: _sanitizeAndDisplayUrl,
+                child: Text('Sanitize URL'),
               ),
-              onPressed: _isValidUrl ? _createCommunity : null,
-              child: Text('Create Community',style: TextStyle(color: Colors.white),),
-            ),
-            SizedBox(height: 24,),
-            ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(
-                  Color.fromRGBO(72, 132, 151, 1),
+              SizedBox(height: 16.0),
+              Text(
+                'Sanitized URL: $_confirmUrl',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 24.0),
+              ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(
+                    Color.fromRGBO(72, 132, 151, 1),
+                  ),
                 ),
+                onPressed: _isValidUrl ? _createCommunity : null,
+                child: Text('Create Community',style: TextStyle(color: Colors.white),),
               ),
-              onPressed: () {
-                Navigator.pushNamed(context, ManageRequestsScreen.routeName);
-              },
-              child: Text('Manage access'),
-            ),
-          ],
+              SizedBox(height: 24,),
+              ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(
+                    Color.fromRGBO(72, 132, 151, 1),
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.pushNamed(context, ManageRequestsScreen.routeName);
+                },
+                child: Text('Manage access'),
+              ),
+            ],
+          ),
         ),
       ),
     );

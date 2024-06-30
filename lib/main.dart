@@ -72,7 +72,7 @@ class _MyAppState extends State<MyApp> {
         LogIn.routeName:(context)=>LogIn(),
         ContactUsPage.routeName:(Context)=>ContactUsPage(),
         AboutUsPage.routeName:(Context)=>AboutUsPage(),
-        JoinCommunityScreen.routeName :(context)=>JoinCommunityScreen(),
+        JoinCommunityScreen.routeName :(context)=>JoinCommunityScreen(initialText: '',),
         CreateCommunityScreen.routeName:(context)=>CreateCommunityScreen(),
         ManageRequestsScreen.routeName:(context)=>ManageRequestsScreen()
 

@@ -58,8 +58,16 @@ dependencies:
   firebase_app_check: ^0.2.1+8
   firebase_crashlytics: ^3.4.9
   firebase_analytics: ^10.8.0
-  email_validator: ^2.0.1
+  image_picker: ^1.0.8
+  iconsax_flutter: ^1.0.0
+  email_validator: ^3.0.0
+  agora_rtc_engine: ^6.3.2
+  permission_handler: ^11.0.1
+  url_launcher: ^6.0.20
   google_maps_flutter: ^2.5.3
+  provider: ^6.0.5
+
+
 
 
 

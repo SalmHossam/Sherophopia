@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'SearchViewModel.dart';
+import 'package:sherophopia/Models/SearchViewModel.dart';
 import 'package:provider/provider.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
