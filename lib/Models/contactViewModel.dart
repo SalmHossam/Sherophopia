@@ -1,41 +1,50 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
-import 'package:email_validator/email_validator.dart';
+import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ContactUsViewModel extends ChangeNotifier {
   final formKey = GlobalKey<FormState>();
-  String name = '';
-  String email = '';
-  String message = '';
+  String _name = '';
+  String _email = '';
+  String _message = '';
+  bool _isSubmitting = false;
 
-  void setName(String value) {
-    name = value;
-    notifyListeners();
+  bool get isSubmitting => _isSubmitting;
+
+  void setName(String name) {
+    _name = name;
   }
 
-  void setEmail(String value) {
-    email = value;
-    notifyListeners();
+  void setEmail(String email) {
+    _email = email;
   }
 
-  void setMessage(String value) {
-    message = value;
-    notifyListeners();
+  void setMessage(String message) {
+    _message = message;
   }
 
-  bool validateAndSave() {
-    final form = formKey.currentState;
-    if (form!.validate()) {
-      form.save();
-      return true;
-    }
-    return false;
-  }
-
-  void submit() {
-    if (validateAndSave()) {
-      // Add your form submission logic here (e.g., send data to a server)
-      print('Form submitted: Name: $name, Email: $email, Message: $message');
+  Future<void> submit(BuildContext context) async {
+    if (formKey.currentState!.validate()) {
+      formKey.currentState!.save();
+      _isSubmitting = true;
+      notifyListeners();
+      try {
+        await FirebaseFirestore.instance.collection('messages').doc(_name).set({
+          'name': _name,
+          'email': _email,
+          'message': _message,
+          'timestamp': FieldValue.serverTimestamp(),
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Message sent successfully')),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error sending message: $e')),
+        );
+      } finally {
+        _isSubmitting = false;
+        notifyListeners();
+      }
     }
   }
 }

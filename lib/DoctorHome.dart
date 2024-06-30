@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:sherophopia/DoctorTabs/UploadResume.dart';
 import 'package:sherophopia/DoctorTabs/UploadTab.dart';
-import 'package:sherophopia/Tabs/communityTab.dart';
+import 'package:sherophopia/Tabs/aboutTab.dart';
+import 'package:sherophopia/DoctorTabs/communityTabDoctor.dart';
+import 'package:sherophopia/Tabs/contactTab.dart';
 import 'package:sherophopia/Tabs/profileTab.dart';
 import 'package:sherophopia/DoctorTabs/DoctorHomeTab.dart';
 import 'package:sherophopia/Tabs/searchTab.dart';
@@ -29,7 +31,7 @@ class _DoctorHomeState extends State<DoctorHome> {
     super.initState();
     _tabs = [
       DoctorHomeTab(),
-      CommunityTab(),
+      CommunityTabDoctor(),
       ProfileTab(),
       UploadResume()
     ];
@@ -82,7 +84,7 @@ class _DoctorHomeState extends State<DoctorHome> {
               title: Text('About us', style: TextStyle(fontSize: 18)),
               selected: _selectedIndex == 1,
               onTap: () {
-                // Add your About Us navigation or functionality here
+                Navigator.pushNamed(context, AboutUsPage.routeName);
               },
             ),
             ListTile(
@@ -90,7 +92,7 @@ class _DoctorHomeState extends State<DoctorHome> {
               title: Text('Contact us', style: TextStyle(fontSize: 18)),
               selected: _selectedIndex == 2,
               onTap: () {
-                // Add your Contact Us navigation or functionality here
+                Navigator.pushNamed(context, ContactUsPage.routeName);
               },
             ),
             ListTile(

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:sherophopia/DoctorTabs/createComunity.dart';
 import 'package:sherophopia/Tabs/joinComunity.dart';
 
-class CommunityTab extends StatelessWidget {
-  const CommunityTab({super.key});
+class CommunityTabDoctor extends StatelessWidget {
+  const CommunityTabDoctor({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -17,12 +18,13 @@ class CommunityTab extends StatelessWidget {
                 fontSize: 20
             ),),
             ElevatedButton(onPressed: (){
-              Navigator.pushNamed(context, JoinCommunityScreen.routeName);
+              Navigator.pushNamed(context, CreateCommunityScreen.routeName);
 
 
             }, style: ButtonStyle(
                 backgroundColor:
-                MaterialStatePropertyAll(Color.fromRGBO(72, 132, 151, 1))),child: Text("Start",style: TextStyle(fontSize: 30),)),
+                MaterialStatePropertyAll(Color.fromRGBO(72, 132, 151, 1))),
+                child: Text("Create",style: TextStyle(fontSize: 30),)),
             SizedBox(
               height: 50,
             ),

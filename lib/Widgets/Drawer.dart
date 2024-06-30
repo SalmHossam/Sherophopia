@@ -3,7 +3,6 @@ import 'package:flutter_slider_drawer/flutter_slider_drawer.dart';
 import 'package:sherophopia/Tabs/searchTab.dart';
 
 class MySlider extends StatelessWidget {
-  static const String routeName="SearchScreen";
   GlobalKey<SliderDrawerState> _key = GlobalKey<SliderDrawerState>();
 
   @override

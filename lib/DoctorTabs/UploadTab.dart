@@ -93,6 +93,7 @@ class _UploadTabState extends State<UploadTab> {
           style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: Colors.white),
         ),
       ),
+      backgroundColor: Colors.white,
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Column(
@@ -112,13 +113,14 @@ class _UploadTabState extends State<UploadTab> {
               ),
             SizedBox(height: 30),
             ElevatedButton(
+              style: ButtonStyle(backgroundColor:MaterialStatePropertyAll(Color.fromRGBO(72, 132, 151, 1),)),
               onPressed: selectFile,
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.add_box_outlined),
+                  Icon(Icons.add_box_outlined,size: 50,),
                   SizedBox(width: 8),
-                  Text('Select File'),
+                  Text('Select File',style:TextStyle(fontSize: 20),),
                 ],
               ),
             ),
@@ -136,18 +138,21 @@ class _UploadTabState extends State<UploadTab> {
             ),
             SizedBox(height: 24),
             ElevatedButton(
+              style: ButtonStyle(backgroundColor:MaterialStatePropertyAll(Color.fromRGBO(72, 132, 151, 1),)),
               onPressed: () {
                 uploadFile(widget.userName);
               },
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.upload_sharp),
+                  Icon(Icons.upload_sharp,size: 50,),
                   SizedBox(width: 8),
-                  Text('Upload File'),
+                  Text('Upload File',style: TextStyle(fontSize: 20),),
                 ],
               ),
             ),
+            SizedBox(height: 40,),
+            Image(image: AssetImage('assets/images/Files sent.gif'))
           ],
         ),
       ),

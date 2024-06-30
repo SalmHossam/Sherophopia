@@ -12,6 +12,7 @@ class _DoctorHomeTabState extends State<DoctorHomeTab> {
   User? user;
 
   String username = '';
+  String _profileImageUrl = '';
 
   @override
   void initState() {
@@ -39,8 +40,9 @@ class _DoctorHomeTabState extends State<DoctorHomeTab> {
                 children: [
                   CircleAvatar(
                     radius: 45,
-                    backgroundImage: AssetImage(
-                        'assets/images/profile.jpg'), // Provide image path
+                      backgroundImage: _profileImageUrl.isNotEmpty
+                          ? NetworkImage(_profileImageUrl)
+                          : AssetImage('assets/images/profile.png') as ImageProvider,// Provide image path
                   ),
                   SizedBox(width: 10), // Add spacing between avatar and text
                   Column(

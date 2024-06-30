@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:sherophopia/Tabs/aboutTab.dart';
+import 'package:sherophopia/Tabs/contactTab.dart';
 import 'package:sherophopia/Tabs/homeTab.dart';
 import 'package:sherophopia/Tabs/searchTab.dart';
 import 'package:sherophopia/Widgets/Drawer.dart';
@@ -75,7 +77,7 @@ class _HomeState extends State<Home> {
               selectedColor: Colors.black,
               selected: _selectedIndex == 1,
               onTap: () {
-                // Add your About Us navigation or functionality here
+                Navigator.pushNamed(context, AboutUsPage.routeName);
               },
             ),
             ListTile(
@@ -84,7 +86,7 @@ class _HomeState extends State<Home> {
               selectedColor: Colors.black,
               selected: _selectedIndex == 2,
               onTap: () {
-                // Add your Contact Us navigation or functionality here
+                Navigator.pushNamed(context, ContactUsPage.routeName);
               },
             ),
           ],
@@ -117,6 +119,7 @@ class _HomeState extends State<Home> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
+         isExtended: false,
         child: Icon(Icons.chat,color: Colors.white,size: 40,),
         backgroundColor:Color.fromRGBO(72, 132, 151, 1),
         onPressed: () {

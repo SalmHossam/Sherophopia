@@ -15,28 +15,74 @@ class _UploadResumeState extends State<UploadResume> {
   String enteredBio = '';
   final _formKey = GlobalKey<FormState>();
 
-  Future<String?> getUsername() async {
+  String? userName; // Variable to store user's username
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize user's username in initState
+    getUserData();
+  }
+
+  Future<void> getUserData() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      final doc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
-      if (doc.exists) {
-        return doc.data()?['username'] as String?;
+      try {
+        final username = user.displayName; // Assuming displayName is set as the username
+        if (username != null && username.isNotEmpty) {
+          setState(() {
+            userName = username;
+          });
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Username not found')),
+          );
+        }
+      } catch (e) {
+        print('Error fetching username: $e');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to fetch username')),
+        );
       }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('User not signed in')),
+      );
     }
-    return null;
   }
 
   Future<void> _saveBio() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      final username = await getUsername();
-      if (username != null) {
-        await FirebaseFirestore.instance.collection('users').doc(username).set({
-          'bio': enteredBio,
-        }, SetOptions(merge: true));
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Bio saved successfully')),
-        );
+      final username = user.displayName; // Assuming displayName is set as the username
+      if (username != null && username.isNotEmpty) {
+        if (enteredName.isNotEmpty && enteredBio.isNotEmpty) {
+          try {
+            // Update the document with the username
+            await FirebaseFirestore.instance.collection('users').doc(username).set({
+              'bio': enteredBio,
+            }, SetOptions(merge: true)); // Use merge: true to merge with existing data
+
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Bio saved successfully')),
+            );
+
+            // Navigate to next screen only after bio is saved
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => UploadTab(userName: enteredName, bio: enteredBio)),
+            );
+          } catch (e) {
+            print('Error saving bio: $e');
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Failed to save bio')),
+            );
+          }
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Please enter both name and bio')),
+          );
+        }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Username not found')),
@@ -52,16 +98,13 @@ class _UploadResumeState extends State<UploadResume> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Upload Resume'),
-        backgroundColor: Color.fromRGBO(72, 132, 151, 1),
-      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: Column(
             children: [
+              Text("Upload Resume", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 40),),
               SizedBox(height: 50),
               TextFormField(
                 decoration: InputDecoration(
@@ -89,12 +132,8 @@ class _UploadResumeState extends State<UploadResume> {
               SizedBox(height: 50),
               ElevatedButton(
                 onPressed: () {
-                  if (enteredName.isNotEmpty && enteredBio.isNotEmpty) {
-                    _saveBio(); // Save bio if name and bio are not empty
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => UploadTab(userName: enteredName, bio: enteredBio)),
-                    );
+                  if (_formKey.currentState!.validate()) {
+                    _saveBio(); // Save bio if form is valid
                   } else {
                     // Notify the user to enter both name and bio
                     ScaffoldMessenger.of(context).showSnackBar(

@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:iconsax_flutter/iconsax_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:sherophopia/Widgets/QouteSection.dart';
-
 import '../Widgets/FeelingIcon.dart';
 import '../Widgets/sessions.dart';
 
@@ -18,6 +18,7 @@ class HomeTab extends StatefulWidget {
 class _HomeTabState extends State<HomeTab> {
   User? user;
   String username = '';
+  String _profileImageUrl = '';
 
   @override
   void initState() {
@@ -36,6 +37,7 @@ class _HomeTabState extends State<HomeTab> {
 
   @override
   Widget build(BuildContext context) {
+    final list = Iconsax.items.entries.toList();
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: ListView(
@@ -45,7 +47,9 @@ class _HomeTabState extends State<HomeTab> {
             children: [
               CircleAvatar(
                 radius: 45,
-                backgroundImage: AssetImage('assets/images/profile.jpg'), // Provide image path
+                backgroundImage: _profileImageUrl.isNotEmpty
+                    ? NetworkImage(_profileImageUrl)
+                    : AssetImage('assets/images/profile.png') as ImageProvider,
               ),
               SizedBox(width: 10), // Add spacing between avatar and text
               Column(

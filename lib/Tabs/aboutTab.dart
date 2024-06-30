@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:sherophopia/Tabs/contactTab.dart';
 
 class AboutUsPage extends StatelessWidget {
+  static String routeName="About";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('About Us'),
+        backgroundColor: Color.fromRGBO(72, 132, 151, 1),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -74,9 +77,10 @@ class AboutUsPage extends StatelessWidget {
               ),
               SizedBox(height: 20),
               ElevatedButton(
+                style: ButtonStyle(backgroundColor:
+                MaterialStatePropertyAll(Color.fromRGBO(72, 132, 151, 1))),
                 onPressed: () {
-                  // Add navigation to the Contact Us page if you have one
-                  // Navigator.push(context, MaterialPageRoute(builder: (context) => ContactUsPage()));
+                   Navigator.pushNamed(context,ContactUsPage.routeName);
                 },
                 child: Text('Contact Us'),
               ),

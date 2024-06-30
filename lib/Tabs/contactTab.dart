@@ -1,15 +1,20 @@
-import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../Models/contactViewModel.dart';
 
 class ContactUsPage extends StatelessWidget {
+  static String routeName = "Contact";
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (_) => ContactUsViewModel(),
       child: Scaffold(
-        appBar: AppBar(title: Text('Contact Us')),
+        appBar: AppBar(
+          title: Text('Contact Us'),
+          backgroundColor: Color.fromRGBO(72, 132, 151, 1),
+        ),
+        backgroundColor: Colors.white,
         body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Consumer<ContactUsViewModel>(
@@ -33,7 +38,7 @@ class ContactUsPage extends StatelessWidget {
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your email';
-                        } else if (!EmailValidator.validate(value)) {
+                        } else if (!value.contains('@') || !value.contains('.')) {
                           return 'Please enter a valid email';
                         }
                         return null;
@@ -53,9 +58,24 @@ class ContactUsPage extends StatelessWidget {
                     ),
                     SizedBox(height: 20),
                     ElevatedButton(
-                      onPressed: viewModel.submit,
-                      child: Text('Submit'),
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStatePropertyAll(
+                          Color.fromRGBO(72, 132, 151, 1),
+                        ),
+                      ),
+                      onPressed: viewModel.isSubmitting
+                          ? null
+                          : () => viewModel.submit(context),
+                      child: viewModel.isSubmitting
+                          ? CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          Colors.white,
+                        ),
+                      )
+                          : Text('Submit'),
                     ),
+                    SizedBox(height: 50,),
+                    Image(image: AssetImage("assets/images/Contact us.gif"))
                   ],
                 ),
               );
