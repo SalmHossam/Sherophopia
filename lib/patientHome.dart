@@ -116,17 +116,20 @@ class _PatientHomeState extends State<PatientHome> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-         isExtended: false,
-        child: Icon(Icons.chat,color: Colors.white,size: 40,),
-        backgroundColor:Color.fromRGBO(72, 132, 151, 1),
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const ChatBotTab()),
-          );          setState(() {
-          });
-        },),
+      floatingActionButton: Visibility(
+        visible: MediaQuery.of(context).viewInsets.bottom == 0.0,
+        child: FloatingActionButton(
+           isExtended: false,
+          child: Icon(Icons.chat,color: Colors.white,size: 40,),
+          backgroundColor:Color.fromRGBO(72, 132, 151, 1),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const ChatBotTab()),
+            );          setState(() {
+            });
+          },),
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
 
