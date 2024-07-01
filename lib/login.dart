@@ -81,7 +81,7 @@ class _LogInState extends State<LogIn> {
         Navigator.pushNamed(context, DoctorHome.routeName);
         break;
       case 'patient':
-        Navigator.pushNamed(context, Home.routeName); // Assuming the correct route name for patient home
+        Navigator.pushNamed(context, PatientHome.routeName); // Assuming the correct route name for patient home
         break;
       default:
         throw Exception('Unknown user role');
@@ -118,25 +118,14 @@ class _LogInState extends State<LogIn> {
                   ),
                   SizedBox(height: 16.0),
                   TextFormField(
-                    controller: _usernameController,
-                    decoration: const InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                      ),
-                      labelText: 'Enter your username',
-                      fillColor: Colors.white,
-                      filled: true,
-                    ),
-                  ),
-                  SizedBox(height: 8.0),
-                  TextFormField(
                     controller: _emailController,
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(8.0)),
                       ),
                       labelText: 'Enter your email',
-                      fillColor: Colors.white,
+                      suffixIcon: Icon(Icons.alternate_email,color:Color.fromRGBO(72, 132, 151, 1),),
+                    fillColor: Colors.white,
                       filled: true,
                     ),
                   ),

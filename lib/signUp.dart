@@ -77,7 +77,7 @@ class _SignUpState extends State<SignUp> {
       if (user.role == 'Doctor or Therapist') {
         Navigator.pushNamed(context, DoctorHome.routeName);
       } else if (user.role == 'Patient') {
-        Navigator.pushNamed(context, Home.routeName);
+        Navigator.pushNamed(context, PatientHome.routeName);
       }
     } else {
       // Show error message
@@ -145,6 +145,7 @@ class _SignUpState extends State<SignUp> {
                       ),
                       labelText: 'Enter Your Email',
                       fillColor: Colors.white,
+                      suffixIcon: Icon(Icons.alternate_email,color:Color.fromRGBO(72, 132, 151, 1),),
                       filled: true,
                     ),
                   ),

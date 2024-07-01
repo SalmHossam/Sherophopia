@@ -82,6 +82,7 @@ class _DoctorHomeState extends State<DoctorHome> {
             ListTile(
               leading: Icon(Icons.info, color: Colors.black),
               title: Text('About us', style: TextStyle(fontSize: 18)),
+              selectedColor: Colors.black,
               selected: _selectedIndex == 1,
               onTap: () {
                 Navigator.pushNamed(context, AboutUsPage.routeName);

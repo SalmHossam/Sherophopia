@@ -20,7 +20,6 @@ class _UploadResumeState extends State<UploadResume> {
   @override
   void initState() {
     super.initState();
-    // Initialize user's username in initState
     getUserData();
   }
 
@@ -53,39 +52,33 @@ class _UploadResumeState extends State<UploadResume> {
 
   Future<void> _saveBio() async {
     final user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      final username = user.displayName; // Assuming displayName is set as the username
-      if (username != null && username.isNotEmpty) {
-        if (enteredName.isNotEmpty && enteredBio.isNotEmpty) {
-          try {
-            // Update the document with the username
-            await FirebaseFirestore.instance.collection('users').doc(username).set({
-              'bio': enteredBio,
-            }, SetOptions(merge: true)); // Use merge: true to merge with existing data
+    if (user != null && userName != null) {
+      if (enteredName.isNotEmpty && enteredBio.isNotEmpty) {
+        try {
+          // Append the bio to the existing document with the username as the document ID
+          await FirebaseFirestore.instance.collection('users').doc(userName).update({
+            'bio': enteredBio,
+            'name': enteredName,
+          });
 
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Bio saved successfully')),
-            );
-
-            // Navigate to next screen only after bio is saved
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => UploadTab(userName: enteredName, bio: enteredBio)),
-            );
-          } catch (e) {
-            print('Error saving bio: $e');
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Failed to save bio')),
-            );
-          }
-        } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Please enter both name and bio')),
+            SnackBar(content: Text('Bio saved successfully')),
+          );
+
+          // Navigate to the next screen only after the bio is saved
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => UploadTab(userName: enteredName, bio: enteredBio)),
+          );
+        } catch (e) {
+          print('Error saving bio: $e');
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Failed to save bio')),
           );
         }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Username not found')),
+          SnackBar(content: Text('Please enter both name and bio')),
         );
       }
     } else {
@@ -104,7 +97,10 @@ class _UploadResumeState extends State<UploadResume> {
           key: _formKey,
           child: Column(
             children: [
-              Text("Upload Resume", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 40),),
+              Text(
+                "Upload Resume",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 40),
+              ),
               SizedBox(height: 50),
               TextFormField(
                 decoration: InputDecoration(

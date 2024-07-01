@@ -7,7 +7,7 @@ import 'package:sherophopia/DoctorTabs/createComunity.dart';
 import 'package:sherophopia/DoctorTabs/manageRequestScreen.dart';
 import 'package:sherophopia/Tabs/aboutTab.dart';
 import 'package:sherophopia/Tabs/contactTab.dart';
-import 'package:sherophopia/Tabs/joinComunity.dart';
+import 'package:sherophopia/PatientTabs/joinComunity.dart';
 import 'package:sherophopia/Tabs/searchTab.dart';
 import 'package:sherophopia/login.dart';
 import 'package:sherophopia/patientHome.dart';
@@ -65,7 +65,7 @@ class _MyAppState extends State<MyApp> {
       initialRoute: IntroductionScreen.routeName,
       routes: {
         IntroductionScreen.routeName:(context)=>IntroductionScreen(),
-        Home.routeName:(context)=>Home(),
+        PatientHome.routeName:(context)=>PatientHome(),
         DoctorHome.routeName:(context)=>DoctorHome(),
         SearchTab.routeName:(context)=>SearchTab(),
         SignUp.routeName:(context)=>SignUp(),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sherophopia/DoctorTabs/createComunity.dart';
-import 'package:sherophopia/Tabs/joinComunity.dart';
+import 'package:sherophopia/DoctorTabs/manageRequestScreen.dart';
+import 'package:sherophopia/PatientTabs/joinComunity.dart';
 
 class CommunityTabDoctor extends StatelessWidget {
   const CommunityTabDoctor({super.key});
@@ -17,14 +18,29 @@ class CommunityTabDoctor extends StatelessWidget {
                 fontWeight: FontWeight.bold,
                 fontSize: 20
             ),),
-            ElevatedButton(onPressed: (){
-              Navigator.pushNamed(context, CreateCommunityScreen.routeName);
-
-
-            }, style: ButtonStyle(
-                backgroundColor:
-                MaterialStatePropertyAll(Color.fromRGBO(72, 132, 151, 1))),
-                child: Text("Create",style: TextStyle(fontSize: 30),)),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(onPressed: (){
+                  Navigator.pushNamed(context, CreateCommunityScreen.routeName);
+                }, style: ButtonStyle(
+                    backgroundColor:
+                    MaterialStatePropertyAll(Color.fromRGBO(72, 132, 151, 1))),
+                    child: Text("Create",style: TextStyle(fontSize: 20),)),
+                SizedBox(width: 30,),
+                ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(
+                      Color.fromRGBO(72, 132, 151, 1),
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.pushNamed(context, ManageRequestsScreen.routeName);
+                  },
+                  child: Text('Manage access',style: TextStyle(fontSize: 20),),
+                ),
+              ],
+            ),
             SizedBox(
               height: 50,
             ),

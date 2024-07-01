@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sherophopia/Tabs/joinComunity.dart';
+import 'package:sherophopia/PatientTabs/joinComunity.dart';
 
 class CommunityTab extends StatelessWidget {
   const CommunityTab({super.key});

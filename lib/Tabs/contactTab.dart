@@ -21,62 +21,65 @@ class ContactUsPage extends StatelessWidget {
             builder: (context, viewModel, child) {
               return Form(
                 key: viewModel.formKey,
-                child: Column(
-                  children: [
-                    TextFormField(
-                      decoration: InputDecoration(labelText: 'Name'),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your name';
-                        }
-                        return null;
-                      },
-                      onSaved: (value) => viewModel.setName(value!),
-                    ),
-                    TextFormField(
-                      decoration: InputDecoration(labelText: 'Email'),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your email';
-                        } else if (!value.contains('@') || !value.contains('.')) {
-                          return 'Please enter a valid email';
-                        }
-                        return null;
-                      },
-                      onSaved: (value) => viewModel.setEmail(value!),
-                    ),
-                    TextFormField(
-                      decoration: InputDecoration(labelText: 'Message'),
-                      maxLines: 4,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your message';
-                        }
-                        return null;
-                      },
-                      onSaved: (value) => viewModel.setMessage(value!),
-                    ),
-                    SizedBox(height: 20),
-                    ElevatedButton(
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStatePropertyAll(
-                          Color.fromRGBO(72, 132, 151, 1),
-                        ),
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        decoration: InputDecoration(labelText: 'Name'),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your name';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) => viewModel.setName(value!),
                       ),
-                      onPressed: viewModel.isSubmitting
-                          ? null
-                          : () => viewModel.submit(context),
-                      child: viewModel.isSubmitting
-                          ? CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          Colors.white,
+                      TextFormField(
+                        decoration: InputDecoration(labelText: 'Email'),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your email';
+                          } else if (!value.contains('@') || !value.contains('.')) {
+                            return 'Please enter a valid email';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) => viewModel.setEmail(value!),
+                      ),
+                      TextFormField(
+                        decoration: InputDecoration(labelText: 'Message'),
+                        maxLines: 4,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your message';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) => viewModel.setMessage(value!),
+                      ),
+                      SizedBox(height: 20),
+                      ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStatePropertyAll(
+                            Color.fromRGBO(72, 132, 151, 1),
+                          ),
                         ),
-                      )
-                          : Text('Submit'),
-                    ),
-                    SizedBox(height: 50,),
-                    Image(image: AssetImage("assets/images/Contact us.gif"))
-                  ],
+                        onPressed: viewModel.isSubmitting
+                            ? null
+                            : () => viewModel.submit(context),
+                        child: viewModel.isSubmitting
+                            ? CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Colors.white,
+                          ),
+                        )
+                            : Text('Submit'),
+                      ),
+                      SizedBox(height: 50,),
+                      Image(image: AssetImage("assets/images/Contact us.gif"))
+                    ],
+                  ),
                 ),
               );
             },

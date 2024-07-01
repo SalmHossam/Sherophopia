@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:sherophopia/DoctorTabs/manageRequestScreen.dart';
 
 class CreateCommunityScreen extends StatefulWidget {
   static String routeName = "create";
@@ -16,11 +15,9 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
   TextEditingController _urlController = TextEditingController();
   String _symptomName = '';
   String _description = '';
-  String _link = '';
   String _sanitizedUrl = '';
   bool _isValidUrl = false;
   String _confirmUrl = '';
-
 
   void _sanitizeAndDisplayUrl() {
     final userInput = _urlController.text.trim();
@@ -29,11 +26,11 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
       setState(() {
         _sanitizedUrl = userInput;
         _isValidUrl = true;
-        _confirmUrl='Valid URl';
+        _confirmUrl = 'Valid URL';
       });
     } else {
       setState(() {
-        _confirmUrl= 'Invalid URL';
+        _confirmUrl = 'Invalid URL';
         _isValidUrl = false;
       });
     }
@@ -41,7 +38,29 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
 
   void _createCommunity() async {
     User? user = _auth.currentUser;
-    if (user != null && _isValidUrl && _symptomName.isNotEmpty && _description.isNotEmpty) {
+
+    if (_symptomName.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Symptom Name is required.')),
+      );
+      return;
+    }
+
+    if (_description.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Description is required.')),
+      );
+      return;
+    }
+
+    if (!_isValidUrl) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please provide a valid URL.')),
+      );
+      return;
+    }
+
+    if (user != null) {
       try {
         await _firestore.collection('communities').add({
           'symptomName': _symptomName,
@@ -60,10 +79,6 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
           SnackBar(content: Text('Failed to create community: $e')),
         );
       }
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please fill all required fields and provide a valid URL.')),
-      );
     }
   }
 
@@ -122,26 +137,19 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               SizedBox(height: 24.0),
-              ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(
-                    Color.fromRGBO(72, 132, 151, 1),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(
+                        Color.fromRGBO(72, 132, 151, 1),
+                      ),
+                    ),
+                    onPressed: _createCommunity,
+                    child: Text('Create Community', style: TextStyle(color: Colors.white)),
                   ),
-                ),
-                onPressed: _isValidUrl ? _createCommunity : null,
-                child: Text('Create Community',style: TextStyle(color: Colors.white),),
-              ),
-              SizedBox(height: 24,),
-              ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(
-                    Color.fromRGBO(72, 132, 151, 1),
-                  ),
-                ),
-                onPressed: () {
-                  Navigator.pushNamed(context, ManageRequestsScreen.routeName);
-                },
-                child: Text('Manage access'),
+                ],
               ),
             ],
           ),

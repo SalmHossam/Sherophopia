@@ -62,10 +62,13 @@ class _ManageRequestsScreenState extends State<ManageRequestsScreen> {
 
   void _rejectRequest(String userEmail, String communityId) async {
     try {
+      String username = await _getUsername(userEmail);
       print('Rejecting request for userEmail: $userEmail, communityId: $communityId');
 
       await _firestore.collection('communities').doc(communityId).update({
         'requests': FieldValue.arrayRemove([userEmail]),
+        'rejectedRequests.$userEmail': username,
+
       });
 
       ScaffoldMessenger.of(context).showSnackBar(

@@ -1,29 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:sherophopia/Tabs/aboutTab.dart';
 import 'package:sherophopia/Tabs/contactTab.dart';
-import 'package:sherophopia/Tabs/homeTab.dart';
+import 'package:sherophopia/PatientTabs/PatientHomeTab.dart';
 import 'package:sherophopia/Tabs/searchTab.dart';
-import 'package:sherophopia/Widgets/Drawer.dart';
 import 'package:sherophopia/Tabs/communityTab.dart';
 import 'package:sherophopia/Tabs/chatbotTab.dart';
 import 'package:sherophopia/Tabs/profileTab.dart';
-import 'package:sherophopia/Tabs/SettingsTab.dart';
 import 'package:sherophopia/introductionScreen.dart';
 
-class Home extends StatefulWidget {
+class PatientHome extends StatefulWidget {
   static const String routeName="HomeScreen";
 
-  Home({super.key});
+  PatientHome({super.key});
 
   @override
-  State<Home> createState() => _HomeState();
+  State<PatientHome> createState() => _PatientHomeState();
 }
 
-class _HomeState extends State<Home> {
+class _PatientHomeState extends State<PatientHome> {
   GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   int index=0;
   List<Widget>Tabs=[
-    HomeTab(),
+    PatientHomeTab(),
     CommunityTab(),
     ProfileTab(),
     SearchTab(),
