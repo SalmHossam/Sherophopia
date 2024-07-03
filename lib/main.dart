@@ -2,23 +2,23 @@ import 'dart:ui';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
+import 'package:provider/provider.dart';
 import 'package:sherophopia/DoctorHome.dart';
 import 'package:sherophopia/DoctorTabs/createComunity.dart';
 import 'package:sherophopia/DoctorTabs/manageRequestScreen.dart';
 import 'package:sherophopia/Tabs/aboutTab.dart';
 import 'package:sherophopia/Tabs/contactTab.dart';
 import 'package:sherophopia/PatientTabs/joinComunity.dart';
+import 'package:sherophopia/Tabs/payment.dart';
 import 'package:sherophopia/Tabs/searchTab.dart';
 import 'package:sherophopia/login.dart';
 import 'package:sherophopia/patientHome.dart';
 import 'package:sherophopia/introductionScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:sherophopia/signUp.dart';
+import 'Models/SearchViewModel.dart';
 import 'firebase_options.dart';
 
-/// Define App ID and Token
-const APP_ID = '<Your App ID>';
-const Token = '<Your Token>';
 
 Future<void> main() async {
   // Show splash screen for 2 seconds
@@ -67,14 +67,18 @@ class _MyAppState extends State<MyApp> {
         IntroductionScreen.routeName:(context)=>IntroductionScreen(),
         PatientHome.routeName:(context)=>PatientHome(),
         DoctorHome.routeName:(context)=>DoctorHome(),
-        SearchTab.routeName:(context)=>SearchTab(),
+        SearchTab.routeName: (context) => ChangeNotifierProvider(
+          create: (context) => SearchViewModel(),
+          child: SearchTab(),
+        ),
         SignUp.routeName:(context)=>SignUp(),
         LogIn.routeName:(context)=>LogIn(),
         ContactUsPage.routeName:(Context)=>ContactUsPage(),
         AboutUsPage.routeName:(Context)=>AboutUsPage(),
         JoinCommunityScreen.routeName :(context)=>JoinCommunityScreen(initialText: '',),
         CreateCommunityScreen.routeName:(context)=>CreateCommunityScreen(),
-        ManageRequestsScreen.routeName:(context)=>ManageRequestsScreen()
+        ManageRequestsScreen.routeName:(context)=>ManageRequestsScreen(),
+        PaymentTab.routeName:(context)=>PaymentTab()
 
       },
 

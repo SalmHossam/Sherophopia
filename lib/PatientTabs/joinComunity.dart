@@ -79,14 +79,22 @@ class _JoinCommunityScreenState extends State<JoinCommunityScreen> {
                   communityData.containsKey('link')
                   ? communityData['link']
                   : null;
-
               User? user = _auth.currentUser;
-              var acceptedRequests = communityData != null &&
-                  communityData.containsKey('acceptedRequests')
-                  ? communityData['acceptedRequests']
-                  : null;
-              bool requestAccepted = acceptedRequests != null &&
-                  acceptedRequests[user!.email] != null;
+              var acceptedRequests = communityData != null && communityData.containsKey('acceptedRequests')
+                  ? List<String>.from(communityData['acceptedRequests'])
+                  : [];
+              var rejectedRequests = communityData != null && communityData.containsKey('rejectedRequests')
+                  ? List<String>.from(communityData['rejectedRequests'])
+                  : [];
+              var pending = communityData != null && communityData.containsKey('requests')
+                  ? List<String>.from(communityData['requests'])
+                  : [];
+
+              bool requestAccepted = acceptedRequests.contains(user?.email);
+              bool requestRejected = rejectedRequests.contains(user?.email);
+              bool pendingRequest = pending.contains(user?.email);
+
+
 
               return Card(
                 margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
@@ -102,21 +110,23 @@ class _JoinCommunityScreenState extends State<JoinCommunityScreen> {
                           'No description available'
                           : 'No description available'),
                       SizedBox(height: 8.0),
-                      GestureDetector(
-                        onTap: () {
-                          if (requestAccepted && link != null &&
-                              link.isNotEmpty) {
+                      if (requestAccepted)
+                        GestureDetector(
+                          onTap: () {
                             _launchURL(link);
-                          }
-                        },
-                        child: Text(
-                          link ?? 'No meeting link provided',
-                          style: TextStyle(
-                            color: Colors.blue,
-                            decoration: TextDecoration.underline,
+                          },
+                          child: Text(
+                            link,
+                            style: TextStyle(
+                              color: Colors.blue,
+                              decoration: TextDecoration.underline,
+                            ),
                           ),
                         ),
-                      ),
+                      if (pendingRequest)
+                        Text("You are not accepted yet",style: TextStyle(color: Colors.orange),),
+                      if (requestRejected)
+                        Text("You are rejected",style: TextStyle(color: Colors.red),)
                     ],
                   ),
                   trailing: ElevatedButton(

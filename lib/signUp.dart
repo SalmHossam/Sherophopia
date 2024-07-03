@@ -27,8 +27,28 @@ class _SignUpState extends State<SignUp> {
       context: context,
       initialDate: DateTime(1950),
       firstDate: DateTime(1950),
-      lastDate: DateTime(2003),
+      lastDate: DateTime(2008),
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            primaryColor: Color.fromRGBO(72, 132, 151, 1), // Header background color
+            hintColor: Color.fromRGBO(72, 132, 151, 1), // Selected day color
+            colorScheme: ColorScheme.light(
+              primary: Color.fromRGBO(72, 132, 151, 1),// Header background color
+              onPrimary: Colors.white, // Header text and icon color
+              onSurface: Colors.black, // Body text color
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                primary: Color.fromRGBO(72, 132, 151, 1), // Button text color
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
+
     if (picked != null) {
       setState(() {
         _birthDateController.text = "${picked.toLocal()}".split(' ')[0];

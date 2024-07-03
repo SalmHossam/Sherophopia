@@ -42,7 +42,7 @@ class _ManageRequestsScreenState extends State<ManageRequestsScreen> {
 
       await _firestore.collection('communities').doc(communityId).update({
         'requests': FieldValue.arrayRemove([userEmail]),
-        'acceptedRequests.$userEmail': username,
+        'acceptedRequests': FieldValue.arrayUnion([userEmail]),
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -67,7 +67,7 @@ class _ManageRequestsScreenState extends State<ManageRequestsScreen> {
 
       await _firestore.collection('communities').doc(communityId).update({
         'requests': FieldValue.arrayRemove([userEmail]),
-        'rejectedRequests.$userEmail': username,
+        'rejectedRequests': FieldValue.arrayUnion([userEmail]),
 
       });
 

@@ -25,13 +25,6 @@ class _PaymentTabState extends State<PaymentTab> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:AppBar(
-        backgroundColor: Color.fromRGBO(72, 132, 151, 1),
-        title: Text(
-          "Sherophopia",
-          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: Colors.white),
-        ),
-      ),
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sherophopia/Tabs/aboutTab.dart';
 import 'package:sherophopia/Tabs/contactTab.dart';
 import 'package:sherophopia/PatientTabs/PatientHomeTab.dart';
+import 'package:sherophopia/Tabs/payment.dart';
 import 'package:sherophopia/Tabs/searchTab.dart';
 import 'package:sherophopia/Tabs/communityTab.dart';
 import 'package:sherophopia/Tabs/chatbotTab.dart';
@@ -24,7 +25,7 @@ class _PatientHomeState extends State<PatientHome> {
     PatientHomeTab(),
     CommunityTab(),
     ProfileTab(),
-    SearchTab(),
+    PaymentTab(),
   ];
 
   var _selectedIndex=0;
@@ -87,6 +88,15 @@ class _PatientHomeState extends State<PatientHome> {
                 Navigator.pushNamed(context, ContactUsPage.routeName);
               },
             ),
+            ListTile(
+              leading: Icon(Icons.search, color: Colors.black),
+              title: Text('Search', style: TextStyle(fontSize: 18)),
+              selectedColor: Colors.black,
+              selected: _selectedIndex == 3,
+              onTap: () {
+                Navigator.pushNamed(context, SearchTab.routeName);
+              },
+            ),
           ],
         ),
       ),
@@ -112,7 +122,7 @@ class _PatientHomeState extends State<PatientHome> {
             BottomNavigationBarItem(icon: Icon(Icons.home_rounded,size: 40,color:Colors.white),label: ""),
             BottomNavigationBarItem(icon: Icon(Icons.groups_rounded,size: 40,color:Colors.white),label: ""),
             BottomNavigationBarItem(icon: Icon(Icons.person,size: 40,color:Colors.white),label: ""),
-            BottomNavigationBarItem(icon: Icon(Icons.search,size: 40,color:Colors.white),label:"")
+            BottomNavigationBarItem(icon: Icon(Icons.payment,size: 40,color:Colors.white),label:"")
           ],
         ),
       ),

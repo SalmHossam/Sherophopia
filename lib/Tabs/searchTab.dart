@@ -1,94 +1,116 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sherophopia/Models/SearchViewModel.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:sherophopia/Tabs/map.dart';
-import 'package:sherophopia/Widgets/CategoryIcon.dart'; // Import the CategoryIcon widget
+import 'package:url_launcher/url_launcher.dart';
+import 'dart:convert';
+import '../Widgets/CategoryIcon.dart';
+
+void map(String query) async {
+  final url = 'https://www.google.com/maps/search/?api=1&query=$query';
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+    throw 'Could not launch $url';
+  }
+}
+
+// Helper function to format JSON
+String formatJson(Map<String, dynamic> json) {
+  return json.entries.map((e) => "${e.key}: ${e.value}").join('\n');
+}
 
 class SearchTab extends StatelessWidget {
-  static String routeName="search";
+  static const String routeName = "SearchScreen";
+
   @override
   Widget build(BuildContext context) {
+    final searchViewModel = Provider.of<SearchViewModel>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Search'),
+        backgroundColor: Color.fromRGBO(72, 132, 151, 1),
       ),
       body: Column(
         children: [
-          TextField(
-            onChanged: (value) {
-              Provider.of<SearchViewModel>(context, listen: false).search(value);
-            },
-            decoration: InputDecoration(
-              hintText: 'Search',
-              prefixIcon: Icon(Icons.search),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              decoration: InputDecoration(
+                labelText: 'Search',
+                prefixIcon: Icon(Icons.search),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+              ),
+              onChanged: (value) {
+                searchViewModel.updateSearchQuery(value);
+              },
             ),
           ),
           SizedBox(height: 20),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               CategoryIcon(
                 icon: Icons.local_hospital,
                 label: 'Hospital',
                 onTap: () {
-                  // Handle tap for Hospital
+                  map('psychiatric hospital near me');
                 },
               ),
               CategoryIcon(
                 icon: Icons.local_pharmacy,
                 label: 'Pharmacy',
                 onTap: () {
-                  // Handle tap for Pharmacy
+                  map('pharmacy near me');
+                },
+              ),
+              CategoryIcon(
+                icon: Icons.medical_services_outlined,
+                label: 'Doctor',
+                onTap: () {
+                  map('psychiatrists near me');
                 },
               ),
               CategoryIcon(
                 icon: Icons.person,
-                label: 'Doctors',
-                onTap: () {
-                  // Handle tap for Doctors
-                },
-              ),
-              CategoryIcon(
-                icon: Icons.psychology,
                 label: 'Therapist',
                 onTap: () {
-                  // Handle tap for Therapist
+                  map('therapist near me');
                 },
               ),
             ],
           ),
-          SizedBox(height: 20),
+          SizedBox(height: 20,),
           Expanded(
-            child: Consumer<SearchViewModel>(
-              builder: (context, viewModel, child) {
-                if (viewModel.isLoading) {
-                  return Center(child: CircularProgressIndicator());
+            child: ListView.builder(
+              itemCount: searchViewModel.searchResults.length,
+              itemBuilder: (context, index) {
+                var searchResult = searchViewModel.searchResults[index];
+                String displayText;
+
+                // Check if searchResult is a Map<String, dynamic>
+                if (searchResult is Map<String, dynamic>) {
+                  displayText = formatJson(searchResult);
+                } else {
+                  displayText = searchResult.toString();
                 }
-                if (viewModel.error != null) {
-                  return Center(child: Text('Error: ${viewModel.error}'));
-                }
-                return ListView.builder(
-                  itemCount: viewModel.results.length,
-                  itemBuilder: (context, index) {
-                    final result = viewModel.results[index];
-                    return ListTile(
-                      title: Text(result['name']),
-                      subtitle: Text(result['type']),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => MapPage(
-                              latitude: result['location'].latitude,
-                              longitude: result['location'].longitude,
-                              name: result['name'],
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  },
+
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    elevation: 5,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ListTile(
+                        title: Text(displayText),
+                      ),
+                    ),
+                  ),
                 );
               },
             ),
