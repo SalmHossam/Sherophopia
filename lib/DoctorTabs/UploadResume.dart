@@ -52,7 +52,7 @@ class _UploadResumeState extends State<UploadResume> {
 
   Future<void> _saveBio() async {
     final user = FirebaseAuth.instance.currentUser;
-    if (user != null && userName != null) {
+    if (user?.email != null && userName != null) {
       if (enteredName.isNotEmpty && enteredBio.isNotEmpty) {
         try {
           // Append the bio to the existing document with the username as the document ID

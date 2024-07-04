@@ -31,70 +31,74 @@ class SearchTab extends StatelessWidget {
         title: Text('Search'),
         backgroundColor: Color.fromRGBO(72, 132, 151, 1),
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              decoration: InputDecoration(
-                labelText: 'Search',
-                prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
+                decoration: InputDecoration(
+                  labelText: 'Search',
+                  prefixIcon: Icon(Icons.search),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
                 ),
+                onChanged: (value) {
+                  searchViewModel.updateSearchQuery(value);
+                },
               ),
-              onChanged: (value) {
-                searchViewModel.updateSearchQuery(value);
-              },
             ),
-          ),
-          SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              CategoryIcon(
-                icon: Icons.local_hospital,
-                label: 'Hospital',
-                onTap: () {
-                  map('psychiatric hospital near me');
-                },
-              ),
-              CategoryIcon(
-                icon: Icons.local_pharmacy,
-                label: 'Pharmacy',
-                onTap: () {
-                  map('pharmacy near me');
-                },
-              ),
-              CategoryIcon(
-                icon: Icons.medical_services_outlined,
-                label: 'Doctor',
-                onTap: () {
-                  map('psychiatrists near me');
-                },
-              ),
-              CategoryIcon(
-                icon: Icons.person,
-                label: 'Therapist',
-                onTap: () {
-                  map('therapist near me');
-                },
-              ),
-            ],
-          ),
-          SizedBox(height: 20,),
-          Expanded(
-            child: ListView.builder(
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                CategoryIcon(
+                  icon: Icons.local_hospital,
+                  label: 'Hospital',
+                  onTap: () {
+                    map('psychiatric hospital near me');
+                  },
+                ),
+                CategoryIcon(
+                  icon: Icons.local_pharmacy,
+                  label: 'Pharmacy',
+                  onTap: () {
+                    map('pharmacy near me');
+                  },
+                ),
+                CategoryIcon(
+                  icon: Icons.medical_services_outlined,
+                  label: 'Doctor',
+                  onTap: () {
+                    map('psychiatrists near me');
+                  },
+                ),
+                CategoryIcon(
+                  icon: Icons.person,
+                  label: 'Therapist',
+                  onTap: () {
+                    map('therapist near me');
+                  },
+                ),
+              ],
+            ),
+            SizedBox(height: 20),
+            ListView.builder(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
               itemCount: searchViewModel.searchResults.length,
               itemBuilder: (context, index) {
                 var searchResult = searchViewModel.searchResults[index];
                 String displayText;
 
-                // Check if searchResult is a Map<String, dynamic>
-                if (searchResult is Map<String, dynamic>) {
-                  displayText = formatJson(searchResult);
+                // Example: If 'name' field exists, display it
+                if (searchResult['name'] != null) {
+                  displayText = searchResult['name'];
                 } else {
-                  displayText = searchResult.toString();
+                  // Display all fields in a JSON format if no specific field found
+                  displayText = formatJson(searchResult);
                 }
 
                 return Padding(
@@ -108,14 +112,19 @@ class SearchTab extends StatelessWidget {
                       padding: const EdgeInsets.all(8.0),
                       child: ListTile(
                         title: Text(displayText),
+                        onTap: () {
+                          // Handle onTap event, e.g., navigate to details screen
+                        },
                       ),
                     ),
                   ),
                 );
               },
             ),
-          ),
-        ],
+            SizedBox(height: 20), // Added SizedBox for spacing
+            Image.asset("assets/images/Search-rafiki.png"), // Adjusted to use `Image.asset`
+          ],
+        ),
       ),
     );
   }

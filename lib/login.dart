@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sherophopia/DoctorHome.dart';
 import 'package:sherophopia/patientHome.dart';
 import 'package:sherophopia/SignUp.dart';
+import 'package:sherophopia/restPassword.dart';
 
 class LogIn extends StatefulWidget {
   const LogIn({Key? key}) : super(key: key);
@@ -16,7 +17,6 @@ class LogIn extends StatefulWidget {
 class _LogInState extends State<LogIn> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _usernameController = TextEditingController();
 
   bool _obscurePassword = true;
 
@@ -108,7 +108,7 @@ class _LogInState extends State<LogIn> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.login_sharp, color: Color.fromRGBO(72, 132, 151, 1)),
+                      Icon(Icons.login_sharp, size: 40,color: Color.fromRGBO(72, 132, 151, 1)),
                       SizedBox(width: 8.0),
                       Text(
                         "LogIn",
@@ -195,6 +195,32 @@ class _LogInState extends State<LogIn> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
+                      ),
+
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Do you forget password?",
+                        style: TextStyle(
+                          color: Colors.black54,
+                          fontSize: 14.0,
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => PasswordResetScreen()),
+                          );
+                        },
+                        child: Text('Rest Password',style: TextStyle(
+                          color: Color.fromRGBO(72, 132, 151, 1),
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.bold,
+                        ),),
                       ),
                     ],
                   ),

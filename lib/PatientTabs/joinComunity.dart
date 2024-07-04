@@ -99,9 +99,22 @@ class _JoinCommunityScreenState extends State<JoinCommunityScreen> {
               return Card(
                 margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                 child: ListTile(
-                  title: Text(
-                      communityData != null ? communityData['symptomName'] ??
-                          'Unknown' : 'Unknown'),
+                  title: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Text('Topic : '),
+                          Text(
+                              communityData != null ? communityData['symptomName'] ??
+                                  'Unknown' : 'Unknown',style: TextStyle(fontWeight:FontWeight.bold),),
+                        ],
+                      ),
+                      Text('Doctor Email : '),
+                      Text(
+                          communityData != null ? communityData['creatorEmail'] ??
+                              'Unknown' : 'Unknown'),
+                    ],
+                  ),
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -111,33 +124,60 @@ class _JoinCommunityScreenState extends State<JoinCommunityScreen> {
                           : 'No description available'),
                       SizedBox(height: 8.0),
                       if (requestAccepted)
-                        GestureDetector(
-                          onTap: () {
-                            _launchURL(link);
-                          },
-                          child: Text(
-                            link,
-                            style: TextStyle(
-                              color: Colors.blue,
-                              decoration: TextDecoration.underline,
+                        Column(
+                          children: [
+                            Row(
+                              children: [
+                                Text("Status : "),
+                                Text("You are accepted join now",style: TextStyle(color: Colors.green),),
+                              ],
                             ),
-                          ),
+                            GestureDetector(
+                              onTap: () {
+                                _launchURL(link);
+                              },
+                              child: Text(
+                                link,
+                                style: TextStyle(
+                                  color: Colors.blue,
+                                  decoration: TextDecoration.underline,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       if (pendingRequest)
-                        Text("You are not accepted yet",style: TextStyle(color: Colors.orange),),
+                        Row(
+                          children: [
+                            Text("Status : "),
+                            Text("You are not accepted yet",style: TextStyle(color: Colors.orange),),
+                          ],
+                        ),
                       if (requestRejected)
-                        Text("You are rejected",style: TextStyle(color: Colors.red),)
+                        Row(
+                          children: [
+                            Text("Status : "),
+                            Text("You are rejected",style: TextStyle(color: Colors.red),),
+                          ],
+                        )
                     ],
                   ),
-                  trailing: ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(Color.fromRGBO(
-                          72, 132, 151, 1)),
-                    ),
-                    onPressed: () {
-                      _requestToJoinCommunity(community.id);
+                  trailing: Builder(
+                    builder: (context) {
+                      if (pendingRequest||requestAccepted||requestRejected) {
+                        return SizedBox.shrink(); // Return an empty widget if the button should not be displayed
+
+                      } else {
+                        return ElevatedButton(
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all(Color.fromRGBO(72, 132, 151, 1)),
+                          ),
+                          onPressed: () {
+                            _requestToJoinCommunity(community.id);
+                          },
+                          child: Text('Join'),
+                        );                      }
                     },
-                    child: Text('Join'),
                   ),
                 ),
               );

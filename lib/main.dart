@@ -15,6 +15,7 @@ import 'package:sherophopia/login.dart';
 import 'package:sherophopia/patientHome.dart';
 import 'package:sherophopia/introductionScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:sherophopia/restPassword.dart';
 import 'package:sherophopia/signUp.dart';
 import 'Models/SearchViewModel.dart';
 import 'firebase_options.dart';
@@ -39,7 +40,6 @@ Future<void> main() async {
       child: Image.asset(
         'assets/images/Splash_960.png',
         fit: BoxFit.cover,
-
       ),
     ),
   );
@@ -58,30 +58,33 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
 
-    return MaterialApp(
+    return ChangeNotifierProvider(
+      create: (context) => SearchViewModel(),
+       child: MaterialApp(
+        title: 'Sherophopia',
+        debugShowCheckedModeBanner: false,
+        initialRoute: IntroductionScreen.routeName,
+        routes: {
+          IntroductionScreen.routeName:(context)=>IntroductionScreen(),
+          PatientHome.routeName:(context)=>PatientHome(),
+          DoctorHome.routeName:(context)=>DoctorHome(),
+          SearchTab.routeName: (context) => ChangeNotifierProvider(
+            create: (context) => SearchViewModel(),
+            child: SearchTab(),
+          ),
+          SignUp.routeName:(context)=>SignUp(),
+          LogIn.routeName:(context)=>LogIn(),
+          ContactUsPage.routeName:(Context)=>ContactUsPage(),
+          AboutUsPage.routeName:(Context)=>AboutUsPage(),
+          JoinCommunityScreen.routeName :(context)=>JoinCommunityScreen(initialText: '',),
+          CreateCommunityScreen.routeName:(context)=>CreateCommunityScreen(),
+          ManageRequestsScreen.routeName:(context)=>ManageRequestsScreen(),
+          PaymentTab.routeName:(context)=>PaymentTab(),
+          PasswordResetScreen.routeName:(context)=>PasswordResetScreen()
 
-      title: 'Sherophopia',
-      debugShowCheckedModeBanner: false,
-      initialRoute: IntroductionScreen.routeName,
-      routes: {
-        IntroductionScreen.routeName:(context)=>IntroductionScreen(),
-        PatientHome.routeName:(context)=>PatientHome(),
-        DoctorHome.routeName:(context)=>DoctorHome(),
-        SearchTab.routeName: (context) => ChangeNotifierProvider(
-          create: (context) => SearchViewModel(),
-          child: SearchTab(),
-        ),
-        SignUp.routeName:(context)=>SignUp(),
-        LogIn.routeName:(context)=>LogIn(),
-        ContactUsPage.routeName:(Context)=>ContactUsPage(),
-        AboutUsPage.routeName:(Context)=>AboutUsPage(),
-        JoinCommunityScreen.routeName :(context)=>JoinCommunityScreen(initialText: '',),
-        CreateCommunityScreen.routeName:(context)=>CreateCommunityScreen(),
-        ManageRequestsScreen.routeName:(context)=>ManageRequestsScreen(),
-        PaymentTab.routeName:(context)=>PaymentTab()
+        },
 
-      },
-
+      ),
     );
   }
 }
