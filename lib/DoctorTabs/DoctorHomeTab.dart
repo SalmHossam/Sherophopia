@@ -1,5 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'set_appointments.dart'; // Import the new file
 
 class DoctorHomeTab extends StatefulWidget {
   const DoctorHomeTab({super.key});
@@ -10,9 +11,7 @@ class DoctorHomeTab extends StatefulWidget {
 
 class _DoctorHomeTabState extends State<DoctorHomeTab> {
   User? user;
-
   String username = '';
-  String _profileImageUrl = '';
 
   @override
   void initState() {
@@ -30,39 +29,48 @@ class _DoctorHomeTabState extends State<DoctorHomeTab> {
   }
 
   @override
-    Widget build(BuildContext context) {
-      return Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ListView(
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: ListView(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+              CircleAvatar(
+                radius: 45,
+                backgroundImage:
+                AssetImage('assets/images/profile.jpg'), // Provide image path
+              ),
+              SizedBox(width: 10), // Add spacing between avatar and text
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CircleAvatar(
-                    radius: 45,
-                      backgroundImage: _profileImageUrl.isNotEmpty
-                          ? NetworkImage(_profileImageUrl)
-                          : AssetImage('assets/images/profile.png') as ImageProvider,// Provide image path
-                  ),
-                  SizedBox(width: 10), // Add spacing between avatar and text
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  Text('Welcome back', style: TextStyle(fontSize: 16)),
+                  Row(
                     children: [
-                      Text('Welcome back', style: TextStyle(fontSize: 16)),
-                      Row(
-                        children: [
-                          Text("DR: "),
-                          Text(username, style: TextStyle(
+                      Text("DR: "),
+                      Text(username,
+                          style: TextStyle(
                               fontSize: 18, fontWeight: FontWeight.bold)),
-                        ],
-                      )
                     ],
                   ),
                 ],
               ),
-              SizedBox(height: 20),
-
-            ]),
-      );
-    }
+            ],
+          ),
+          SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SetAppointments()),
+              );
+            },
+            child: Text('Set Available Appointments'),
+          ),
+        ],
+      ),
+    );
+  }
 }
