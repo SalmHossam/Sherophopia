@@ -9,6 +9,7 @@ import 'package:sherophopia/DoctorTabs/DoctorHomeTab.dart';
 import 'package:sherophopia/Tabs/searchTab.dart';
 import 'package:sherophopia/Tabs/chatbotTab.dart';
 import 'package:sherophopia/introductionScreen.dart';
+import 'package:sherophopia/DoctorTabs/set_appointments.dart';
 
 class DoctorHome extends StatefulWidget {
   static const String routeName = "DoctorHomeScreen";
@@ -103,6 +104,17 @@ class _DoctorHomeState extends State<DoctorHome> {
               selectedColor: Colors.black,
               onTap: () {
                 Navigator.pushNamed(context, SearchTab.routeName);
+              },
+            ),
+             ListTile(
+              leading: Icon(Icons.add_circle, color: Colors.black),
+              title: Text('Set Available Appointments', style: TextStyle(fontSize: 18)),
+              selected: _selectedIndex == 3,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SetAppointments()),
+                );
               },
             ),
           ],
