@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uuid/uuid.dart';
 import 'package:intl/intl.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // Import FirebaseAuth
 import 'package:shared_preferences/shared_preferences.dart';
-//const id for each user
+
 class SetAppointments extends StatefulWidget {
-  static String routeName="set";
+  static String routeName = "set";
 
   @override
   _SetAppointmentsState createState() => _SetAppointmentsState();
@@ -16,32 +17,12 @@ class _SetAppointmentsState extends State<SetAppointments> {
   DateTime? _selectedDate;
   TimeOfDay? _startTime;
   TimeOfDay? _endTime;
-  String _userId = '';
 
-  @override
-  void initState() {
-    super.initState();
-    _loadUserId();
-  }
+  // Firebase Auth instance
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Future<void> _loadUserId() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _userId = prefs.getString('user_id') ?? '';
-      if (_userId.isEmpty) {
-        _generateUserId();
-      }
-    });
-  }
-
-  Future<void> _generateUserId() async {
-    final uuid = Uuid();
-    final newUserId = uuid.v4();
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setString('user_id', newUserId);
-    setState(() {
-      _userId = newUserId;
-    });
+  Future<User?> _getUser() async {
+    return _auth.currentUser;
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -62,7 +43,7 @@ class _SetAppointmentsState extends State<SetAppointments> {
             ),
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
-                primary: Color.fromRGBO(72, 132, 151, 1), // Button text color
+                foregroundColor: Color.fromRGBO(72, 132, 151, 1), // Button text color
               ),
             ),
           ),
@@ -71,11 +52,13 @@ class _SetAppointmentsState extends State<SetAppointments> {
       },
     );
 
-    if (picked != null && picked != _selectedDate)
+    if (picked != null && picked != _selectedDate) {
       setState(() {
         _selectedDate = picked;
       });
+    }
   }
+
   Future<void> _selectTime(BuildContext context, bool isStartTime) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
@@ -84,15 +67,12 @@ class _SetAppointmentsState extends State<SetAppointments> {
         return Theme(
           data: ThemeData.light().copyWith(
             colorScheme: ColorScheme.light(
-              // change the border color
-              primary: Color.fromRGBO(72, 132, 151, 1),
-              // change the text color
-              onSurface: Color.fromRGBO(72, 132, 151, 1),
+              primary: Color.fromRGBO(72, 132, 151, 1), // Border color
+              onSurface: Color.fromRGBO(72, 132, 151, 1), // Text color
             ),
-            // button colors
             buttonTheme: ButtonThemeData(
               colorScheme: ColorScheme.light(
-                primary: Color.fromRGBO(72, 132, 151, 1),
+                primary: Color.fromRGBO(72, 132, 151, 1), // Button color
               ),
             ),
           ),
@@ -100,7 +80,8 @@ class _SetAppointmentsState extends State<SetAppointments> {
         );
       },
     );
-    if (picked != null)
+
+    if (picked != null) {
       setState(() {
         if (isStartTime) {
           _startTime = picked;
@@ -108,6 +89,7 @@ class _SetAppointmentsState extends State<SetAppointments> {
           _endTime = picked;
         }
       });
+    }
   }
 
   Future<void> _submitAppointment() async {
@@ -130,26 +112,44 @@ class _SetAppointmentsState extends State<SetAppointments> {
         _endTime!.minute,
       );
 
-      // Save the available slot to Firestore
-      await FirebaseFirestore.instance.collection('available_slots').add({
-        'start_time': startDateTime,
-        'end_time': endDateTime,
-        'user_id': _userId, // Add the user ID to the document
-      });
+      // Ensure end time is after start time
+      if (endDateTime.isBefore(startDateTime)) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('End time must be after start time')),
+        );
+        return;
+      }
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Available slot added successfully')),
-      );
+      // Get current user
+      final User? user = await _getUser();
 
-      // Reset the form
-      setState(() {
-        _selectedDate = null;
-        _startTime = null;
-        _endTime = null;
-      });
+      if (user != null && user.email != null) {
+        // Save the available slot to Firestore with 'booked' attribute set to false
+        await FirebaseFirestore.instance.collection('available_slots').add({
+          'start_time': startDateTime,
+          'end_time': endDateTime,
+          'creator_email': user.email, // Use authenticated user's email
+          'booked': false, // Initially not booked
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Available slot added successfully')),
+        );
+
+        // Reset the form
+        setState(() {
+          _selectedDate = null;
+          _startTime = null;
+          _endTime = null;
+        });
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('User not authenticated')),
+        );
+      }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please fill all required fields ')),
+        SnackBar(content: Text('Please fill all required fields')),
       );
     }
   }
@@ -174,6 +174,7 @@ class _SetAppointmentsState extends State<SetAppointments> {
           child: ListView(
             children: <Widget>[
               ListTile(
+                key: ValueKey('date'),
                 title: Text(_selectedDate == null
                     ? 'No date chosen!'
                     : DateFormat.yMd().format(_selectedDate!)),
@@ -181,6 +182,7 @@ class _SetAppointmentsState extends State<SetAppointments> {
                 onTap: () => _selectDate(context),
               ),
               ListTile(
+                key: ValueKey('start_time'),
                 title: Text(_startTime == null
                     ? 'No start time chosen!'
                     : _startTime!.format(context)),
@@ -188,6 +190,7 @@ class _SetAppointmentsState extends State<SetAppointments> {
                 onTap: () => _selectTime(context, true),
               ),
               ListTile(
+                key: ValueKey('end_time'),
                 title: Text(_endTime == null
                     ? 'No end time chosen!'
                     : _endTime!.format(context)),
@@ -205,10 +208,9 @@ class _SetAppointmentsState extends State<SetAppointments> {
                     Colors.white,
                   ),
                 ),
-
                 child: Text('Set Available Slot'),
               ),
-              SizedBox(height: 40,),
+              SizedBox(height: 40),
               Image(image: AssetImage('assets/images/Work time-cuate.png'))
             ],
           ),
