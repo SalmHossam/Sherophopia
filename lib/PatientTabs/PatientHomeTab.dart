@@ -39,30 +39,50 @@ class _PatientHomeTabState extends State<PatientHomeTab> {
   }
   void _saveFeeling(String feeling) async {
     try {
-      DocumentReference docRef = _firestore.collection('feelings').doc(username);
-      DocumentSnapshot doc = await docRef.get();
+      print('The Feeling is $feeling');
 
-      if (doc.exists) {
-        // Update the existing document
-        await docRef.update({
-          'feeling': feeling,
-          'timestamp': FieldValue.serverTimestamp(),
-          'user': username,
+      // Check if the document already exists
+      final docRef = _firestore.collection('feelings').doc(username);
+      final docSnapshot = await docRef.get();
+
+      if (!docSnapshot.exists) {
+        // If document doesn't exist, create it with initial array
+        await docRef.set({
+          'feelings': [
+            {
+              'feeling': feeling,
+              'timestamp': DateTime.now(),
+            }
+          ],
         });
       } else {
-        // Create a new document
-        await docRef.set({
-          'feeling': feeling,
-          'timestamp': FieldValue.serverTimestamp(),
-          'user': username,
+        // If document exists, update the array
+        await docRef.update({
+          'feelings': FieldValue.arrayUnion([
+            {
+              'feeling': feeling,
+              'timestamp': DateTime.now(),
+            }
+          ]),
         });
       }
 
-      Fluttertoast.showToast(msg: 'Feeling saved successfully!');
-    } catch (e) {
-      Fluttertoast.showToast(msg: 'Error saving feeling: $e');
+      Fluttertoast.showToast(msg: 'Feeling saved successfully');
+    } catch (e, stackTrace) {
+      print('Error saving feeling: $e');
+      print('Stack trace: $stackTrace');
+      Fluttertoast.showToast(msg: 'Error saving your feeling. Please try again.');
     }
   }
+
+
+
+  @override
+  void dispose() {
+    _feelingController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final list = Iconsax.items.entries.toList();
@@ -150,6 +170,7 @@ class _PatientHomeTabState extends State<PatientHomeTab> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextField(
+                  controller: _feelingController,
                   cursorColor:Color.fromRGBO(72, 132, 151, 1) ,
                   decoration: InputDecoration(hintText: 'Type here...',
                     border: UnderlineInputBorder(),hoverColor:Color.fromRGBO(72, 132, 151, 1) , ),
@@ -159,18 +180,19 @@ class _PatientHomeTabState extends State<PatientHomeTab> {
               ElevatedButton(
                 style: ButtonStyle(backgroundColor:
                 MaterialStatePropertyAll(Color.fromRGBO(72, 132, 151, 1))),
-                onPressed: () {
-                  String feeling = _feelingController.text;
-                  if (feeling.isNotEmpty) {
-                    _saveFeeling(feeling);
-                    Navigator.pop(context);
-                    Fluttertoast.showToast(msg: 'Your response has been submitted');
-                    _feelingController.clear();
-                  } else {
-                    Fluttertoast.showToast(msg: 'Please enter your feeling');
-                  }
-                },
-                child: Text('Submit'),
+                  onPressed: () {
+                    String feeling = _feelingController.text;
+                    print('Feeling entered: $feeling');
+                    if (feeling.isNotEmpty) {
+                      _saveFeeling(feeling);
+                      Navigator.pop(context);
+                      Fluttertoast.showToast(msg: 'Your response has been submitted');
+                      _feelingController.clear();
+                    } else {
+                      Fluttertoast.showToast(msg: 'Please enter your feeling');
+                    }
+                  },
+                  child: Text('Submit'),
               ),
             ],
           ),

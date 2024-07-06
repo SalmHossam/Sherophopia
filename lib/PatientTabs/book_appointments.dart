@@ -1,73 +1,175 @@
-
 import 'package:flutter/material.dart';
-import 'package:booking_calendar/booking_calendar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-//okay
+import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 class BookAppointments extends StatefulWidget {
-  static String routeName="booking";
+  static String routeName = "book";
+
   @override
   _BookAppointmentsState createState() => _BookAppointmentsState();
 }
 
 class _BookAppointmentsState extends State<BookAppointments> {
-  late DateTime bookingStart;
-  late DateTime bookingEnd;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final _emailController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
-  @override
-  void initState() {
-    super.initState();
-    bookingStart = DateTime.now();
-    bookingEnd = bookingStart.add(Duration(hours: 8)); // 8 hours of available sessions
+  void _launchURL(String url) async {
+    final Uri uri = Uri.parse(url);
+    if (!await canLaunch(uri.toString())) {
+      throw 'Could not launch $url';
+    }
+    await launch(uri.toString());
+  }
+
+  Future<void> _bookSlot(DocumentSnapshot slot) async {
+    if (_formKey.currentState?.validate() ?? false) {
+      try {
+        // Check if slot is already booked
+        bool isBooked = slot['booked'] ?? false;
+        if (isBooked) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('This slot has already been booked')),
+          );
+          return;
+        }
+
+        // Update Firestore document
+        await slot.reference.update({
+          'booked': true,
+          'patient_email': _emailController.text.trim(),
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Slot booked successfully')),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to book the slot')),
+        );
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Book Appointments'),
-      backgroundColor:Color.fromRGBO(72, 132, 151, 1),
+      appBar: AppBar(
+        title: Text('Book Available Slots'),
+        backgroundColor: Color.fromRGBO(72, 132, 151, 1),
       ),
-      body: BookingCalendar(
-        bookingService: BookingService(
-          serviceName: 'Consultation',
-          serviceDuration: 60,
-          bookingStart: bookingStart,
-          bookingEnd: bookingEnd,
-          userId: '1', // Use userId instead of providerId
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              TextFormField(
+                controller: _emailController,
+                decoration: InputDecoration(
+                  labelText: 'Enter your email',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                  prefixIcon: Icon(Icons.email),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your email';
+                  } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                    return 'Please enter a valid email address';
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(height: 20),
+              Expanded(
+                child: FutureBuilder<QuerySnapshot>(
+                  future: FirebaseFirestore.instance.collection('available_slots').get(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    }
+
+                    if (snapshot.hasError) {
+                      return Center(child: Text('Error: ${snapshot.error}'));
+                    }
+
+                    if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                      return Center(child: Text('No available slots'));
+                    }
+
+                    return ListView.builder(
+                      itemCount: snapshot.data!.docs.length,
+                      itemBuilder: (context, index) {
+                        DocumentSnapshot slot = snapshot.data!.docs[index];
+                        DateTime startTime = (slot['start_time'] as Timestamp).toDate();
+                        DateTime endTime = (slot['end_time'] as Timestamp).toDate();
+                        String creatorEmail = slot['creator_email'] ?? 'Unknown';
+                        String location = slot['location'] ?? 'Unknown';
+                        bool booked = slot['booked'] ?? false;
+
+                        return Card(
+                          elevation: 4,
+                          margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+
+                          ),
+                          child: ListTile(
+                            title: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Date & Time: ${DateFormat.yMd().format(startTime)} ${DateFormat.jm().format(startTime)} - ${DateFormat.jm().format(endTime)}',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                SizedBox(height: 8),
+                                Text('Doctor Email: $creatorEmail'),
+                                SizedBox(height: 8),
+                                GestureDetector(
+                                  onTap: () {
+                                    _launchURL(location);
+                                  },
+                                  child: Text(
+                                    location,
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      color: Colors.blue,
+                                      decoration: TextDecoration.underline,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            trailing: booked
+                                ? Text('Already booked')
+                                : ElevatedButton(
+                              onPressed: () {
+                                _bookSlot(slot);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Color.fromRGBO(72, 132, 151, 1),
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                              child: Text('Book'),
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
-        getBookingStream: _fetchAppointmentsFromFirebase,
-        uploadBooking: _uploadBooking,
-        convertStreamResultToDateTimeRanges: _convertStreamResultToDateTimeRanges,
       ),
     );
-  }
-
-  Stream<List<DateTimeRange>> _fetchAppointmentsFromFirebase({required DateTime start, required DateTime end}) async* {
-    final appointmentsRef = _firestore.collection('appointments');
-    final appointmentsSnapshot = await appointmentsRef.get();
-    final appointments = appointmentsSnapshot.docs;
-
-    List<DateTimeRange> bookings = appointments.map((appointment) {
-      final startTime = appointment['startTime'].toDate();
-      final endTime = appointment['endTime'].toDate();
-      return DateTimeRange(start: startTime, end: endTime);
-    }).toList();
-
-    yield bookings;
-  }
-
-  Future<void> _uploadBooking({required BookingService newBooking}) async {
-    // Implement the logic to upload the booking to the database
-    final bookingRef = _firestore.collection('appointments');
-    await bookingRef.add({
-      'startTime': newBooking.bookingStart,
-      'endTime': newBooking.bookingEnd,
-      'userId': newBooking.userId,
-    });
-  }
-
-  List<DateTimeRange> _convertStreamResultToDateTimeRanges({required dynamic streamResult}) {
-    // Convert the stream result into a list of DateTimeRanges
-    return streamResult;
   }
 }

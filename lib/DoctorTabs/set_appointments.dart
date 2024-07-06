@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:uuid/uuid.dart';
 import 'package:intl/intl.dart';
-import 'package:firebase_auth/firebase_auth.dart'; // Import FirebaseAuth
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SetAppointments extends StatefulWidget {
   static String routeName = "set";
@@ -17,8 +15,8 @@ class _SetAppointmentsState extends State<SetAppointments> {
   DateTime? _selectedDate;
   TimeOfDay? _startTime;
   TimeOfDay? _endTime;
+  TextEditingController _locationController = TextEditingController(); // Controller for location input
 
-  // Firebase Auth instance
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future<User?> _getUser() async {
@@ -34,16 +32,16 @@ class _SetAppointmentsState extends State<SetAppointments> {
       builder: (BuildContext context, Widget? child) {
         return Theme(
           data: ThemeData.light().copyWith(
-            primaryColor: Color.fromRGBO(72, 132, 151, 1), // Header background color
-            hintColor: Color.fromRGBO(72, 132, 151, 1), // Selected day color
+            primaryColor: Color.fromRGBO(72, 132, 151, 1),
+            hintColor: Color.fromRGBO(72, 132, 151, 1),
             colorScheme: ColorScheme.light(
-              primary: Color.fromRGBO(72, 132, 151, 1), // Header background color
-              onPrimary: Colors.white, // Header text and icon color
-              onSurface: Colors.black, // Body text color
+              primary: Color.fromRGBO(72, 132, 151, 1),
+              onPrimary: Colors.white,
+              onSurface: Colors.black,
             ),
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
-                foregroundColor: Color.fromRGBO(72, 132, 151, 1), // Button text color
+                primary: Color.fromRGBO(72, 132, 151, 1),
               ),
             ),
           ),
@@ -67,12 +65,12 @@ class _SetAppointmentsState extends State<SetAppointments> {
         return Theme(
           data: ThemeData.light().copyWith(
             colorScheme: ColorScheme.light(
-              primary: Color.fromRGBO(72, 132, 151, 1), // Border color
-              onSurface: Color.fromRGBO(72, 132, 151, 1), // Text color
+              primary: Color.fromRGBO(72, 132, 151, 1),
+              onSurface: Color.fromRGBO(72, 132, 151, 1),
             ),
             buttonTheme: ButtonThemeData(
               colorScheme: ColorScheme.light(
-                primary: Color.fromRGBO(72, 132, 151, 1), // Button color
+                primary: Color.fromRGBO(72, 132, 151, 1),
               ),
             ),
           ),
@@ -112,7 +110,6 @@ class _SetAppointmentsState extends State<SetAppointments> {
         _endTime!.minute,
       );
 
-      // Ensure end time is after start time
       if (endDateTime.isBefore(startDateTime)) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('End time must be after start time')),
@@ -120,27 +117,35 @@ class _SetAppointmentsState extends State<SetAppointments> {
         return;
       }
 
-      // Get current user
       final User? user = await _getUser();
 
       if (user != null && user.email != null) {
-        // Save the available slot to Firestore with 'booked' attribute set to false
+        String location = _locationController.text.trim(); // Get location from TextField
+
+        if (location.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Please enter a location')),
+          );
+          return;
+        }
+
         await FirebaseFirestore.instance.collection('available_slots').add({
           'start_time': startDateTime,
           'end_time': endDateTime,
-          'creator_email': user.email, // Use authenticated user's email
-          'booked': false, // Initially not booked
+          'creator_email': user.email,
+          'booked': false,
+          'location': location, // Use location entered by user
         });
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Available slot added successfully')),
         );
 
-        // Reset the form
         setState(() {
           _selectedDate = null;
           _startTime = null;
           _endTime = null;
+          _locationController.clear(); // Clear the location TextField
         });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -196,6 +201,20 @@ class _SetAppointmentsState extends State<SetAppointments> {
                     : _endTime!.format(context)),
                 trailing: Icon(Icons.access_time),
                 onTap: () => _selectTime(context, false),
+              ),
+              TextFormField(
+                controller: _locationController,
+                decoration: InputDecoration(
+                  labelText: 'Location',
+                  hintText: 'Enter the location',
+                  suffixIcon: Icon(Icons.location_on),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter the location';
+                  }
+                  return null;
+                },
               ),
               SizedBox(height: 20),
               ElevatedButton(
