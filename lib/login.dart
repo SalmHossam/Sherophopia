@@ -48,7 +48,7 @@ class _LogInState extends State<LogIn> {
     } catch (e) {
       // Show error message
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to sign in. Check your credentials and try again.')),
+        SnackBar(content: Text('Failed to login. Check your credentials and try again.')),
       );
       print('Failed to sign in with error: $e');
     }
@@ -129,7 +129,7 @@ class _LogInState extends State<LogIn> {
                       filled: true,
                     ),
                   ),
-                  SizedBox(height: 8.0),
+                  SizedBox(height: 16.0),
                   TextFormField(
                     controller: _passwordController,
                     decoration: InputDecoration(
@@ -216,7 +216,7 @@ class _LogInState extends State<LogIn> {
                             MaterialPageRoute(builder: (context) => PasswordResetScreen()),
                           );
                         },
-                        child: Text('Rest Password',style: TextStyle(
+                        child: Text('Reset Password',style: TextStyle(
                           color: Color.fromRGBO(72, 132, 151, 1),
                           fontSize: 14.0,
                           fontWeight: FontWeight.bold,

@@ -65,6 +65,24 @@ class _SignUpState extends State<SignUp> {
       );
       return;
     }
+    if (_usernameController==null || _usernameController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('please enter your username')),
+      );
+      return;
+    }
+    if (_emailController==null || _emailController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('please enter your email')),
+      );
+      return;
+    }
+    if (_passwordController==null || _passwordController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('please enter your password')),
+      );
+      return;
+    }
 
     // Validate email format
     final emailPattern = r'^[a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$';
@@ -75,6 +93,7 @@ class _SignUpState extends State<SignUp> {
       );
       return;
     }
+
 
     // Create user object
     signUpModel user = signUpModel(

@@ -5,6 +5,8 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 //const id for each user
 class SetAppointments extends StatefulWidget {
+  static String routeName="set";
+
   @override
   _SetAppointmentsState createState() => _SetAppointmentsState();
 }
@@ -45,20 +47,58 @@ class _SetAppointmentsState extends State<SetAppointments> {
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2101),
+      initialDate: DateTime(2024),
+      firstDate: DateTime(2024),
+      lastDate: DateTime(2026),
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            primaryColor: Color.fromRGBO(72, 132, 151, 1), // Header background color
+            hintColor: Color.fromRGBO(72, 132, 151, 1), // Selected day color
+            colorScheme: ColorScheme.light(
+              primary: Color.fromRGBO(72, 132, 151, 1), // Header background color
+              onPrimary: Colors.white, // Header text and icon color
+              onSurface: Colors.black, // Body text color
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                primary: Color.fromRGBO(72, 132, 151, 1), // Button text color
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
+
     if (picked != null && picked != _selectedDate)
       setState(() {
         _selectedDate = picked;
       });
   }
-
   Future<void> _selectTime(BuildContext context, bool isStartTime) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
-      initialTime: TimeOfDay.now(),
+      initialTime: TimeOfDay(hour: 10, minute: 47),
+      builder: (context, child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            colorScheme: ColorScheme.light(
+              // change the border color
+              primary: Color.fromRGBO(72, 132, 151, 1),
+              // change the text color
+              onSurface: Color.fromRGBO(72, 132, 151, 1),
+            ),
+            // button colors
+            buttonTheme: ButtonThemeData(
+              colorScheme: ColorScheme.light(
+                primary: Color.fromRGBO(72, 132, 151, 1),
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
     if (picked != null)
       setState(() {
@@ -119,6 +159,7 @@ class _SetAppointmentsState extends State<SetAppointments> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Set Available Appointments'),
+        backgroundColor: Color.fromRGBO(72, 132, 151, 1),
         actions: [
           IconButton(
             onPressed: _submitAppointment,
@@ -167,6 +208,8 @@ class _SetAppointmentsState extends State<SetAppointments> {
 
                 child: Text('Set Available Slot'),
               ),
+              SizedBox(height: 40,),
+              Image(image: AssetImage('assets/images/Work time-cuate.png'))
             ],
           ),
         ),

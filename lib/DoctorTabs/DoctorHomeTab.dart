@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'set_appointments.dart'; // Import the new file
+import '../Tabs/content.dart';
 
 class DoctorHomeTab extends StatefulWidget {
   const DoctorHomeTab({super.key});
@@ -40,7 +41,7 @@ class _DoctorHomeTabState extends State<DoctorHomeTab> {
               CircleAvatar(
                 radius: 45,
                 backgroundImage:
-                AssetImage('assets/images/profile.jpg'), // Provide image path
+                AssetImage('assets/images/profile.png'), // Provide image path
               ),
               SizedBox(width: 10), // Add spacing between avatar and text
               Column(
@@ -61,14 +62,24 @@ class _DoctorHomeTabState extends State<DoctorHomeTab> {
           ),
           SizedBox(height: 20),
           ElevatedButton(
+            style: ButtonStyle(
+                backgroundColor: MaterialStatePropertyAll(Color.fromRGBO(72, 132, 151, 1),)
+            ),
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => SetAppointments()),
-              );
+              Navigator.pushNamed(
+                context,SetAppointments.routeName);
             },
-            child: Text('Set Available Appointments'),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Set Available Appointments',style: TextStyle(fontSize: 20),),
+                SizedBox(width: 20,),
+                Icon(Icons.calendar_month,size: 35)
+              ],
+            ),
           ),
+          SizedBox(height: 35,),
+          content(),
         ],
       ),
     );

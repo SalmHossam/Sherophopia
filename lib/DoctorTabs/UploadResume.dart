@@ -57,12 +57,12 @@ class _UploadResumeState extends State<UploadResume> {
         try {
           // Append the bio to the existing document with the username as the document ID
           await FirebaseFirestore.instance.collection('users').doc(userName).update({
-            'bio': enteredBio,
+            'introduction': enteredBio,
             'name': enteredName,
           });
 
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Bio saved successfully')),
+            SnackBar(content: Text('Introduction saved successfully')),
           );
 
           // Navigate to the next screen only after the bio is saved
@@ -71,14 +71,14 @@ class _UploadResumeState extends State<UploadResume> {
             MaterialPageRoute(builder: (context) => UploadTab(userName: enteredName, bio: enteredBio)),
           );
         } catch (e) {
-          print('Error saving bio: $e');
+          print('Error saving introduction: $e');
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Failed to save bio')),
+            SnackBar(content: Text('Failed to save introduction')),
           );
         }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Please enter both name and bio')),
+          SnackBar(content: Text('Please enter both name and introduction')),
         );
       }
     } else {
@@ -116,7 +116,7 @@ class _UploadResumeState extends State<UploadResume> {
               SizedBox(height: 20),
               TextFormField(
                 decoration: InputDecoration(
-                  hintText: 'Please Enter Your Bio',
+                  hintText: 'Please Enter Your Introduction',
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
                 ),
                 onChanged: (value) {
@@ -134,7 +134,7 @@ class _UploadResumeState extends State<UploadResume> {
                     // Notify the user to enter both name and bio
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text('Please enter both name and bio'),
+                        content: Text('Please enter both name and introduction'),
                         backgroundColor: Colors.red,
                       ),
                     );

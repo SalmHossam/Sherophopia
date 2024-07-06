@@ -6,7 +6,9 @@ import 'package:provider/provider.dart';
 import 'package:sherophopia/DoctorHome.dart';
 import 'package:sherophopia/DoctorTabs/createComunity.dart';
 import 'package:sherophopia/DoctorTabs/manageRequestScreen.dart';
+import 'package:sherophopia/DoctorTabs/set_appointments.dart';
 import 'package:sherophopia/Tabs/aboutTab.dart';
+import 'package:sherophopia/PatientTabs/book_appointments.dart';
 import 'package:sherophopia/Tabs/contactTab.dart';
 import 'package:sherophopia/PatientTabs/joinComunity.dart';
 import 'package:sherophopia/Tabs/payment.dart';
@@ -80,7 +82,9 @@ class _MyAppState extends State<MyApp> {
           CreateCommunityScreen.routeName:(context)=>CreateCommunityScreen(),
           ManageRequestsScreen.routeName:(context)=>ManageRequestsScreen(),
           PaymentTab.routeName:(context)=>PaymentTab(),
-          PasswordResetScreen.routeName:(context)=>PasswordResetScreen()
+          PasswordResetScreen.routeName:(context)=>PasswordResetScreen(),
+          BookAppointments.routeName:(context)=>BookAppointments(),
+          SetAppointments.routeName:(context)=>SetAppointments()
 
         },
 

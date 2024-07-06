@@ -2,13 +2,14 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:iconsax_flutter/iconsax_flutter.dart';
-import 'package:share_plus/share_plus.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:sherophopia/PatientTabs/book_appointments.dart';
 import 'package:sherophopia/Widgets/QouteSection.dart';
 import '../Widgets/FeelingIcon.dart';
-import '../Widgets/sessions.dart';
+import '../Tabs/content.dart';
 
 class PatientHomeTab extends StatefulWidget {
   @override
@@ -19,6 +20,8 @@ class _PatientHomeTabState extends State<PatientHomeTab> {
   User? user;
   String username = '';
   String _profileImageUrl = '';
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final TextEditingController _feelingController = TextEditingController();
 
   @override
   void initState() {
@@ -34,7 +37,32 @@ class _PatientHomeTabState extends State<PatientHomeTab> {
       });
     }
   }
+  void _saveFeeling(String feeling) async {
+    try {
+      DocumentReference docRef = _firestore.collection('feelings').doc(username);
+      DocumentSnapshot doc = await docRef.get();
 
+      if (doc.exists) {
+        // Update the existing document
+        await docRef.update({
+          'feeling': feeling,
+          'timestamp': FieldValue.serverTimestamp(),
+          'user': username,
+        });
+      } else {
+        // Create a new document
+        await docRef.set({
+          'feeling': feeling,
+          'timestamp': FieldValue.serverTimestamp(),
+          'user': username,
+        });
+      }
+
+      Fluttertoast.showToast(msg: 'Feeling saved successfully!');
+    } catch (e) {
+      Fluttertoast.showToast(msg: 'Error saving feeling: $e');
+    }
+  }
   @override
   Widget build(BuildContext context) {
     final list = Iconsax.items.entries.toList();
@@ -67,25 +95,44 @@ class _PatientHomeTabState extends State<PatientHomeTab> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              FeelingIcon(icon: Icons.sentiment_very_satisfied, label: 'Satisfy', onTap: () => _handleFeelingTap(context, 'Satisfy')),
+              FeelingIcon(icon: Icons.sentiment_very_satisfied, label: 'Satisfy', onTap: () => _handleFeelingTap(context, 'Satisfy'),),
               FeelingIcon(icon: Icons.sentiment_dissatisfied, label: 'Sad', onTap: () => _handleFeelingTap(context, 'Sad')),
               FeelingIcon(icon: Icons.sentiment_very_dissatisfied, label: 'Angry', onTap: () => _handleFeelingTap(context, 'Angry')),
               FeelingIcon(icon: Icons.sentiment_satisfied, label: 'Happy', onTap: () => _handleFeelingTap(context, 'Happy')),
               FeelingIcon(icon: Icons.sentiment_neutral, label: 'Worry', onTap: () => _handleFeelingTap(context, 'Worry')),
-              FeelingIcon(icon: Icons.add_circle_outline, label: 'Other', onTap: () => _showBottomSheet(context)),
+              FeelingIcon(icon: Icons.add_reaction_outlined, label: 'Other', onTap: () => _showBottomSheet(context)),
             ],
           ),
           SizedBox(height: 20),
           QuoteSection(),
           SizedBox(height: 20),
-          UpcomingSessions(),
+          ElevatedButton(
+            style: ButtonStyle(
+              backgroundColor: MaterialStatePropertyAll(Color.fromRGBO(72, 132, 151, 1),)
+            ),
+            onPressed: () {
+             Navigator.pushNamed(context, BookAppointments.routeName);
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Book Appointments',style: TextStyle(fontSize: 25),),
+                SizedBox(width: 20,),
+                Icon(Icons.calendar_month_outlined,size: 35,)
+              ],
+            ),
+          ),
+          SizedBox(height: 35,),
+          content(),
         ],
       ),
     );
   }
 
   void _handleFeelingTap(BuildContext context, String feeling) {
+    _saveFeeling(feeling);
     Fluttertoast.showToast(msg: 'You are feeling $feeling');
+
   }
 
   void _showBottomSheet(BuildContext context) {
@@ -113,9 +160,15 @@ class _PatientHomeTabState extends State<PatientHomeTab> {
                 style: ButtonStyle(backgroundColor:
                 MaterialStatePropertyAll(Color.fromRGBO(72, 132, 151, 1))),
                 onPressed: () {
-                  // Handle submission
-                  Navigator.pop(context);
-                  Fluttertoast.showToast(msg: 'Your response has been submitted');
+                  String feeling = _feelingController.text;
+                  if (feeling.isNotEmpty) {
+                    _saveFeeling(feeling);
+                    Navigator.pop(context);
+                    Fluttertoast.showToast(msg: 'Your response has been submitted');
+                    _feelingController.clear();
+                  } else {
+                    Fluttertoast.showToast(msg: 'Please enter your feeling');
+                  }
                 },
                 child: Text('Submit'),
               ),

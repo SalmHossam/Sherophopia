@@ -8,9 +8,6 @@ import 'package:sherophopia/Tabs/communityTab.dart';
 import 'package:sherophopia/Tabs/chatbotTab.dart';
 import 'package:sherophopia/Tabs/profileTab.dart';
 import 'package:sherophopia/introductionScreen.dart';
-import 'package:sherophopia/Tabs/book_appointments.dart';
-
-
 
 class PatientHome extends StatefulWidget {
   static const String routeName="HomeScreen";
@@ -98,18 +95,6 @@ class _PatientHomeState extends State<PatientHome> {
               selected: _selectedIndex == 3,
               onTap: () {
                 Navigator.pushNamed(context, SearchTab.routeName);
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.access_time, color: Colors.black),
-              title: Text('Book a session', style: TextStyle(fontSize: 18)),
-              selectedColor: Colors.black,
-              selected: _selectedIndex == 3,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => BookAppointments()),
-                );
               },
             ),
           ],
