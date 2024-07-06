@@ -15,7 +15,8 @@ class _SetAppointmentsState extends State<SetAppointments> {
   DateTime? _selectedDate;
   TimeOfDay? _startTime;
   TimeOfDay? _endTime;
-  TextEditingController _locationController = TextEditingController(); // Controller for location input
+  TextEditingController _locationController = TextEditingController();
+  TextEditingController _typeController = TextEditingController();
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -128,6 +129,14 @@ class _SetAppointmentsState extends State<SetAppointments> {
           );
           return;
         }
+        String session = _typeController.text.trim(); // Get location from TextField
+
+        if (session.isEmpty) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Please enter session type')),
+          );
+          return;
+        }
 
         await FirebaseFirestore.instance.collection('available_slots').add({
           'start_time': startDateTime,
@@ -135,6 +144,7 @@ class _SetAppointmentsState extends State<SetAppointments> {
           'creator_email': user.email,
           'booked': false,
           'location': location, // Use location entered by user
+          'session_type':session,
         });
 
         ScaffoldMessenger.of(context).showSnackBar(
@@ -146,6 +156,7 @@ class _SetAppointmentsState extends State<SetAppointments> {
           _startTime = null;
           _endTime = null;
           _locationController.clear(); // Clear the location TextField
+          _typeController.clear();
         });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -212,6 +223,19 @@ class _SetAppointmentsState extends State<SetAppointments> {
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter the location';
+                  }
+                  return null;
+                },
+              ),
+              TextFormField(
+                controller: _typeController,
+                decoration: InputDecoration(
+                  labelText: 'session',
+                  hintText: 'Enter the session type',
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter session type ';
                   }
                   return null;
                 },

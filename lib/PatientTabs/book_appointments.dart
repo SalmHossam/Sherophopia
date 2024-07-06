@@ -110,6 +110,7 @@ class _BookAppointmentsState extends State<BookAppointments> {
                         String creatorEmail = slot['creator_email'] ?? 'Unknown';
                         String location = slot['location'] ?? 'Unknown';
                         bool booked = slot['booked'] ?? false;
+                        String sessionType=slot['session_type']??'Unknown';
 
                         return Card(
                           elevation: 4,
@@ -129,6 +130,18 @@ class _BookAppointmentsState extends State<BookAppointments> {
                                 SizedBox(height: 8),
                                 Text('Doctor Email: $creatorEmail'),
                                 SizedBox(height: 8),
+                                Row(
+                                  children: [
+                                    Text("Session Type: "),
+                                    Text(
+                                      sessionType,
+                                      style: TextStyle(
+                                        color: sessionType == "Online" ? Colors.green : Colors.red,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 8,),
                                 GestureDetector(
                                   onTap: () {
                                     _launchURL(location);
@@ -142,6 +155,7 @@ class _BookAppointmentsState extends State<BookAppointments> {
                                     ),
                                   ),
                                 ),
+
                               ],
                             ),
                             trailing: booked

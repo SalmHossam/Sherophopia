@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sherophopia/Tabs/aboutTab.dart';
 import 'package:sherophopia/Tabs/contactTab.dart';
 import 'package:sherophopia/PatientTabs/PatientHomeTab.dart';
-import 'package:sherophopia/Tabs/payment.dart';
+import 'package:sherophopia/PatientTabs/payment.dart';
 import 'package:sherophopia/Tabs/searchTab.dart';
 import 'package:sherophopia/Tabs/communityTab.dart';
 import 'package:sherophopia/Tabs/chatbotTab.dart';

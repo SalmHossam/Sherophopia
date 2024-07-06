@@ -11,7 +11,7 @@ import 'package:sherophopia/Tabs/aboutTab.dart';
 import 'package:sherophopia/PatientTabs/book_appointments.dart';
 import 'package:sherophopia/Tabs/contactTab.dart';
 import 'package:sherophopia/PatientTabs/joinComunity.dart';
-import 'package:sherophopia/Tabs/payment.dart';
+import 'package:sherophopia/PatientTabs/payment.dart';
 import 'package:sherophopia/Tabs/searchTab.dart';
 import 'package:sherophopia/login.dart';
 import 'package:sherophopia/patientHome.dart';
