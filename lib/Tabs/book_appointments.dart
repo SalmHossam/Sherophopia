@@ -1,70 +1,121 @@
-
 import 'package:flutter/material.dart';
-import 'package:booking_calendar/booking_calendar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-//okay
+import 'package:intl/intl.dart';
+//right
 class BookAppointments extends StatefulWidget {
+  static String routeName = "book";
+
   @override
   _BookAppointmentsState createState() => _BookAppointmentsState();
 }
 
 class _BookAppointmentsState extends State<BookAppointments> {
-  late DateTime bookingStart;
-  late DateTime bookingEnd;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final _emailController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
-  @override
-  void initState() {
-    super.initState();
-    bookingStart = DateTime.now();
-    bookingEnd = bookingStart.add(Duration(hours: 8)); // 8 hours of available sessions
+  Future<void> _bookSlot(DocumentSnapshot slot) async {
+    if (_formKey.currentState?.validate() ?? false) {
+      try {
+        await _firestore.runTransaction((transaction) async {
+          DocumentSnapshot freshSnap = await transaction.get(slot.reference);
+          transaction.update(freshSnap.reference, {
+            'booked': true,
+            'patient_email': _emailController.text.trim(), // Store patient email
+          });
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Slot booked successfully')),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to book the slot')),
+        );
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Book Appointments')),
-      body: BookingCalendar(
-        bookingService: BookingService(
-          serviceName: 'Consultation',
-          serviceDuration: 60,
-          bookingStart: bookingStart,
-          bookingEnd: bookingEnd,
-          userId: '1', // Use userId instead of providerId
+      appBar: AppBar(
+        title: Text('Book Available Slots'),
+        backgroundColor: Color.fromRGBO(72, 132, 151, 1),
+      ),
+      body: Form(
+        key: _formKey,
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: TextFormField(
+                controller: _emailController,
+                decoration: InputDecoration(
+                  labelText: 'Enter your email',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your email';
+                  } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                    return 'Please enter a valid email address';
+                  }
+                  return null;
+                },
+              ),
+            ),
+            Expanded(
+              child: StreamBuilder(
+                stream: _firestore
+                    .collection('available_slots')
+                    .where('booked', isEqualTo: false)
+                    .snapshots(),
+                builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+
+                  if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  }
+
+                  if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                    return Center(child: Text('No available slots'));
+                  }
+
+                  return ListView.builder(
+                    itemCount: snapshot.data!.docs.length,
+                    itemBuilder: (context, index) {
+                      DocumentSnapshot slot = snapshot.data!.docs[index];
+                      DateTime startTime = (slot['start_time'] as Timestamp).toDate();
+                      DateTime endTime = (slot['end_time'] as Timestamp).toDate();
+
+                      return ListTile(
+                        title: Text(
+                          '${DateFormat.yMd().format(startTime)}: ${DateFormat.jm().format(startTime)} - ${DateFormat.jm().format(endTime)}',
+                        ),
+                        trailing: ElevatedButton(
+                          onPressed: () => _bookSlot(slot),
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                              Color.fromRGBO(72, 132, 151, 1),
+                            ),
+                            foregroundColor: MaterialStateProperty.all<Color>(
+                              Colors.white,
+                            ),
+                          ),
+                          child: Text('Book'),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
         ),
-        getBookingStream: _fetchAppointmentsFromFirebase,
-        uploadBooking: _uploadBooking,
-        convertStreamResultToDateTimeRanges: _convertStreamResultToDateTimeRanges,
       ),
     );
-  }
-
-  Stream<List<DateTimeRange>> _fetchAppointmentsFromFirebase({required DateTime start, required DateTime end}) async* {
-    final appointmentsRef = _firestore.collection('appointments');
-    final appointmentsSnapshot = await appointmentsRef.get();
-    final appointments = appointmentsSnapshot.docs;
-
-    List<DateTimeRange> bookings = appointments.map((appointment) {
-      final startTime = appointment['startTime'].toDate();
-      final endTime = appointment['endTime'].toDate();
-      return DateTimeRange(start: startTime, end: endTime);
-    }).toList();
-
-    yield bookings;
-  }
-
-  Future<void> _uploadBooking({required BookingService newBooking}) async {
-    // Implement the logic to upload the booking to the database
-    final bookingRef = _firestore.collection('appointments');
-    await bookingRef.add({
-      'startTime': newBooking.bookingStart,
-      'endTime': newBooking.bookingEnd,
-      'userId': newBooking.userId,
-    });
-  }
-
-  List<DateTimeRange> _convertStreamResultToDateTimeRanges({required dynamic streamResult}) {
-    // Convert the stream result into a list of DateTimeRanges
-    return streamResult;
   }
 }
