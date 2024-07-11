@@ -88,9 +88,15 @@ class _UploadTabState extends State<UploadTab> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(72, 132, 151, 1),
-        title: Text(
-          "Sherophopia",
-          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: Colors.white),
+        title: Row(
+          children: [
+            Text(
+              "Sherophopia",
+              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w700, color: Colors.white),
+            ),
+            Spacer(),
+            Image(image: AssetImage('assets/images/psychology.png'),height: 40,width: 40,)
+          ],
         ),
       ),
       backgroundColor: Colors.white,

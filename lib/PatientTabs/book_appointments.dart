@@ -55,7 +55,14 @@ class _BookAppointmentsState extends State<BookAppointments> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Book Available Slots'),
+        title: Row(
+          children: [
+            Text('Book One-to-One session',style: TextStyle(fontSize: 20),),
+            Spacer(),
+            Image(image: AssetImage('assets/images/psychology.png'),height: 40,width: 40,)
+
+          ],
+        ),
         backgroundColor: Color.fromRGBO(72, 132, 151, 1),
       ),
       body: Padding(

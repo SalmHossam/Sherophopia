@@ -36,9 +36,15 @@ class _PatientHomeState extends State<PatientHome> {
       extendBody: true,
       appBar: AppBar(
           backgroundColor:Color.fromRGBO(72, 132, 151, 1),
-          title: Text("Sherophopia",
-              style: const TextStyle(
-                  fontSize: 22, fontWeight: FontWeight.w700,color:Colors.white))),
+          title: Row(
+            children: [
+              Text("Sherophopia",
+                  style: const TextStyle(
+                      fontSize: 22, fontWeight: FontWeight.w700,color:Colors.white)),
+              SizedBox(width: 140,),
+              Image(image: AssetImage('assets/images/psychology.png'),height: 40,width: 40,)
+            ],
+          )),
       body:Tabs[index],
       drawer: Drawer(
         child: ListView(

@@ -14,7 +14,13 @@ class _ChatBotTabState extends State<ChatBotTab> {
     return Scaffold(
       appBar:AppBar(
         backgroundColor:Color.fromRGBO(72, 132, 151, 1),
-        title: Text("Chatbot"),
+        title: Row(
+          children: [
+            Text("Chatbot"),
+            Spacer(),
+            Image(image: AssetImage('assets/images/psychology.png'),height: 40,width: 40,)
+          ],
+        ),
       ),
       backgroundColor: Colors.white,
       body: Column(

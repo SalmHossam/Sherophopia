@@ -59,7 +59,13 @@ class _JoinCommunityScreenState extends State<JoinCommunityScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(72, 132, 151, 1),
-        title: Text('Join Community'),
+        title: Row(
+          children: [
+            Text('Join Community'),
+            Spacer(),
+            Image(image: AssetImage('assets/images/psychology.png'),height: 40,width: 40,)
+          ],
+        ),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: _firestore.collection('communities').snapshots(),

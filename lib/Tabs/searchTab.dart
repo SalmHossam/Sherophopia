@@ -28,7 +28,13 @@ class SearchTab extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Search'),
+        title: Row(
+          children: [
+            Text('Search'),
+            Spacer(),
+            Image(image: AssetImage('assets/images/psychology.png'),height: 40,width: 40,)
+          ],
+        ),
         backgroundColor: Color.fromRGBO(72, 132, 151, 1),
       ),
       body: SingleChildScrollView(

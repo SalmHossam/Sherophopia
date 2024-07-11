@@ -8,7 +8,13 @@ class AboutUsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('About Us'),
+        title: Row(
+          children: [
+            Text('About Us'),
+            Spacer(),
+            Image(image: AssetImage('assets/images/psychology.png'),height: 40,width: 40,)
+          ],
+        ),
         backgroundColor: Color.fromRGBO(72, 132, 151, 1),
       ),
       body: Padding(

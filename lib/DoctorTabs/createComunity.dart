@@ -86,7 +86,13 @@ class _CreateCommunityScreenState extends State<CreateCommunityScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Create Community'),
+        title: Row(
+          children: [
+            Text('Create Community'),
+            Spacer(),
+            Image(image: AssetImage('assets/images/psychology.png'),height: 40,width: 40,)
+          ],
+        ),
         backgroundColor: Color.fromRGBO(72, 132, 151, 1),
       ),
       body: Padding(

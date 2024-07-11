@@ -174,14 +174,15 @@ class _SetAppointmentsState extends State<SetAppointments> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Set Available Appointments'),
+        title: Row(
+          children: [
+            Text('Set Available Appointments',style: TextStyle(fontSize: 20),),
+            Spacer(),
+            Image(image: AssetImage('assets/images/psychology.png'),height: 40,width: 40,)
+
+          ],
+        ),
         backgroundColor: Color.fromRGBO(72, 132, 151, 1),
-        actions: [
-          IconButton(
-            onPressed: _submitAppointment,
-            icon: Icon(Icons.check),
-          ),
-        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -214,20 +215,6 @@ class _SetAppointmentsState extends State<SetAppointments> {
                 onTap: () => _selectTime(context, false),
               ),
               TextFormField(
-                controller: _locationController,
-                decoration: InputDecoration(
-                  labelText: 'Location',
-                  hintText: 'Enter the location',
-                  suffixIcon: Icon(Icons.location_on),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter the location';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
                 controller: _typeController,
                 decoration: InputDecoration(
                   labelText: 'session',
@@ -240,6 +227,22 @@ class _SetAppointmentsState extends State<SetAppointments> {
                   return null;
                 },
               ),
+              SizedBox(height: 10,),
+              TextFormField(
+                controller: _locationController,
+                decoration: InputDecoration(
+                  labelText: 'Location or URL',
+                  hintText: 'Enter the location or URL',
+                  suffixIcon: Icon(Icons.location_on),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter the location or URL';
+                  }
+                  return null;
+                },
+              ),
+
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _submitAppointment,

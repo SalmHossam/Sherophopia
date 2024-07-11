@@ -11,7 +11,13 @@ class ContactUsPage extends StatelessWidget {
       create: (_) => ContactUsViewModel(),
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Contact Us'),
+          title: Row(
+            children: [
+              Text('Contact Us'),
+              Spacer(),
+              Image(image: AssetImage('assets/images/psychology.png'),height: 40,width: 40,)
+            ],
+          ),
           backgroundColor: Color.fromRGBO(72, 132, 151, 1),
         ),
         backgroundColor: Colors.white,
